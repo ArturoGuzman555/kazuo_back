@@ -31,13 +31,11 @@ export class Users {
     type: 'varchar',
     length: 50,
     nullable: false,
+    unique: true,
   })
   email: string;
 
-  @ApiProperty({
-    description: 'Contraseña del usuario',
-    example: 'password123',
-  })
+  @ApiHideProperty()
   @Column({
     type: 'varchar',
     length: 150,
@@ -46,53 +44,27 @@ export class Users {
   password: string;
 
   @ApiProperty({
-    description: 'Número de teléfono del usuario',
-    example: 5551234567,
+    description: 'Nombre de la compañía del usuario',
+    example: 'Mi Empresa S.A.',
   })
   @Column({
-    type: 'int',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
   })
-  phone: number;
+  company?: string;
 
-  @ApiProperty({
-    description: 'País del usuario',
-    example: 'México',
-  })
-  @Column({
-    type: 'varchar',
-    length: 50,
-  })
-  country: string;
-
-  @ApiProperty({
-    description: 'Ciudad del usuario',
-    example: 'Ciudad de México',
-  })
-  @Column({
-    type: 'varchar',
-    length: 50,
-  })
-  city: string;
-
-  @ApiProperty({
-    description: 'Dirección del usuario',
-    example: 'Av. Reforma 123',
-  })
-  @Column({
-    type: 'varchar',
-    length: 50,
-  })
-  address: string;
-  @ApiProperty({
-    description: 'Nombre de la compañia',
-    example: 'Empresa 1',
-  })
-  @Column({
-    type: 'varchar',
-    length: 50,
-  })
   @ApiHideProperty()
-  @Column({ default: false })
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
   isAdmin: boolean;
-  
+
+  @ApiHideProperty() 
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  pay: boolean;
 }
