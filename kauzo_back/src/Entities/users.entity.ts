@@ -94,4 +94,5 @@ export class Users {
   @ApiHideProperty()
   @Column({ default: false })
   isAdmin: boolean;
+  
 }

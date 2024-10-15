@@ -12,9 +12,11 @@ export class UsersService {
 
   async getUsers(page: number, limit: number) {
     const users = await this.userRepository.getUsers(page, limit);
-    return users.map(
+    return users.map
+    (
       ({ password, ...userWithoutPassword }) => userWithoutPassword,
     );
+    
   }
 
   async getUserById(id: string) {
