@@ -14,7 +14,7 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { AuthGuard } from 'src/auth/guards/auth-guard.guard';
+import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 
 @Controller('product')
 export class ProductController {
@@ -41,7 +41,10 @@ export class ProductController {
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateProduct: UpdateProductDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateProduct: UpdateProductDto,
+  ) {
     return this.productService.update(id, updateProduct);
   }
 

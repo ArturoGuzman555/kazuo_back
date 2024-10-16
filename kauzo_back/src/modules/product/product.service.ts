@@ -30,12 +30,14 @@ export class ProductService {
 
     const newProduct = this.productsRepository.create({
       name: createProduct.name,
-      description: createProduct.description,
+      quantity: createProduct.quantity,
       price: createProduct.price,
-      stock: createProduct.stock,
       imgUrl: createProduct.imgUrl,
+      minStock: createProduct.minStock,
       category,
     });
+
+    return await this.productsRepository.save(newProduct);
   }
 
   async findAll() {
@@ -62,12 +64,15 @@ export class ProductService {
   }
 
   async remove(id: string) {
-    const deleteProduct = await this.productsRepository.findOne({where: {id}});
+    const deleteProduct = await this.productsRepository.findOne({
+      where: { id },
+    });
 
-    if(!deleteProduct)
-      throw new NotFoundException ('Producto no encontrado')
+    if (!deleteProduct) throw new NotFoundException('Producto no encontrado');
 
-    await this.productsRepository.remove(deleteProduct)
-    return {message: `El producto con el ID: ${id} fue eliminado exitosamente`}
+    await this.productsRepository.remove(deleteProduct);
+    return {
+      message: `El producto con el ID: ${id} fue eliminado exitosamente`,
+    };
   }
 }
