@@ -1,16 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
+import { v4 as uuid } from 'uuid';
+import { Product } from './product.entity';
 
-@Entity({
-  name: 'users',
-})
+@Entity({ name: 'users' })
 export class Users {
   @ApiProperty({
     description: 'ID único del usuario',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
 
   @ApiProperty({
     description: 'Nombre del usuario',
@@ -61,10 +61,13 @@ export class Users {
   })
   isAdmin: boolean;
 
-  @ApiHideProperty() 
+  @ApiHideProperty()
   @Column({
     type: 'boolean',
     default: false,
   })
   pay: boolean;
+
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
 }
