@@ -23,7 +23,8 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
- 
+  // @Roles(Role.ADMIN)
+  // @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   create(@Body() createCategory: CreateCategoryDto) {
     return this.categoryService.create(createCategory);
@@ -36,6 +37,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoryService.findOne(id);
   }
