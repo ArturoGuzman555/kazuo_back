@@ -26,7 +26,9 @@ export class ProductService {
       where: { name: createProduct.name },
     });
 
-    if (!product) throw new NotFoundException('El producto ya existe');
+    if (product){
+      throw new NotFoundException('El producto ya existe');
+    } 
 
     const newProduct = this.productsRepository.create({
       name: createProduct.name,
@@ -41,9 +43,10 @@ export class ProductService {
   }
 
   async findAll() {
-    return await this.productsRepository.find({
+    const all = await this.productsRepository.find({
       relations: ['category'],
     });
+    return all;
   }
 
   async findOne(id: string) {
