@@ -10,7 +10,7 @@ export class Users {
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid();
+  id: string;
 
   @ApiProperty({
     description: 'Nombre del usuario',

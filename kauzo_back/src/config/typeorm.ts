@@ -1,8 +1,8 @@
 import { registerAs } from '@nestjs/config';
-import { config as configDotenv } from 'dotenv';
+import { config as dotenvConfig } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-configDotenv({ path: '.development.env' });
+dotenvConfig({ path: '.env' });
 
 const config = {
   type: 'postgres',
@@ -10,7 +10,7 @@ const config = {
   port: parseInt(process.env.DB_PORT, 10),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  database: process.env.DB_DATABASE,
   autoLoadEntities: true,
   synchronize: true,
   logging: false,
