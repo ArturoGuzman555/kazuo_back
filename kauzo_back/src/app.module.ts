@@ -7,6 +7,7 @@ import { Module } from '@nestjs/common';
 import { ProductModule } from './modules/product/product.module';
 import { UsersModule } from './modules/users/users.module';
 import { CategoryModule } from './modules/category/category.module';
+import { SeedsModule } from './modules/seeds.module';
 
 @Module({
   imports: [
@@ -14,6 +15,8 @@ import { CategoryModule } from './modules/category/category.module';
     AuthModule,
     ProductModule,
     CategoryModule,
+
+    SeedsModule,
 
     ConfigModule.forRoot({
       isGlobal: true,
