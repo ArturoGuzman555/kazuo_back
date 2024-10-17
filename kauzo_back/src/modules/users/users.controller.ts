@@ -17,6 +17,10 @@ import { Roles } from 'src/decorators/roles.decorators';
 import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './user.dto';
+import { Role } from './roles.enum';
+import { UserOwnershipGuard } from '../auth/guards/usership.guard';
+
+
 
 @ApiTags('users')
 @Controller('users')
@@ -27,7 +31,7 @@ export class UsersController {
   @Get()
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  @Roles(Role.ADMIN)
+  @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
   async getUsers(
     @Query('page') page: number = 1,

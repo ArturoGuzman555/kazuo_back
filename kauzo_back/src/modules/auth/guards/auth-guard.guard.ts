@@ -7,7 +7,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
-import { Role } from 'src/users/roles.enum';
+import { Role } from 'src/modules/users/roles.enum';
+
 
 
 
@@ -27,7 +28,7 @@ export class AuthGuard implements CanActivate {
 
       payload.exp = new Date(payload.exp * 1000);
       payload.iat = new Date(payload.iat * 1000);
-      payload.roles = payload.isAdmin ? [Role.ADMIN] : [Role.USER];
+      payload.roles = payload.isAdmin ? [Role.Admin] : [Role.User];
       request.user = payload;
 
       request.user = {
@@ -46,7 +47,7 @@ export class AuthGuard implements CanActivate {
         const userIdToModify = request.params.id;
 
         if (
-          request.user.roles.includes(Role.ADMIN) ||
+          request.user.roles.includes(Role) ||
           request.user.userId === userIdToModify
         ) {
           return true;

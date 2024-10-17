@@ -16,15 +16,14 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { Roles } from 'src/decorators/roles.decorators';
-import { Role } from 'src/decorators/roles.enum';
+
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  // @Roles(Role.ADMIN)
-  // @UseGuards(AuthGuard)
+ 
   @HttpCode(HttpStatus.OK)
   create(@Body() createCategory: CreateCategoryDto) {
     return this.categoryService.create(createCategory);
