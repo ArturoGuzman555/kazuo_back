@@ -146,56 +146,17 @@ export class UpdateUserDto {
   confirmPass?: string;
 
   /**
-   * Debe ser un string de 3 a 80 caracteres
-   * @example 'Prueba 1'
-   */
-  @ApiProperty({
-    description: 'Debe ser un string de 3 a 80 caracteres.',
-    example: 'Prueba 1',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(80)
-  address?: string;
-
-  /**
-   * Debe ser un número
-   * @example 1122334455
-   */
-  @ApiProperty({
-    description: 'Debe ser un número.',
-    example: 1122334455,
-  })
-  @IsOptional()
-  @IsNumber()
-  phone?: number;
-
-  /**
-   * Debe ser un string de 3 a 20 caracteres
-   * @example Peru
-   */
-  @ApiProperty({
-    description: 'Debe ser un string de 3 a 20 caracteres.',
-    example: 'Peru',
-  })
-  @IsOptional()
-  @IsString()
-  @Length(3, 20)
-  country?: string;
-
-  /**
    * Debe ser un string entre 3 y 20 caracteres
-   * @example Cali
+   * @example Empresa 1
    */
   @ApiProperty({
-    description: 'Debe ser un string entre 3 y 20 caracteres.',
-    example: 'Cali',
+    description: 'Debe ser un string entre 3 y 50 caracteres.',
+    example: 'Empresa 1',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  @Length(3, 20)
-  city?: string;
+  @Length(3, 50)
+  company: string;
 
   /**
    * Propiedad oculta

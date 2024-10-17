@@ -17,7 +17,6 @@ import { Roles } from 'src/decorators/roles.decorators';
 import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './user.dto';
-import { Role } from 'src/decorators/roles.enum';
 
 @ApiTags('users')
 @Controller('users')
@@ -39,7 +38,7 @@ export class UsersController {
     return this.usersService.getUsers(page, limit);
   }
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, UserOwnershipGuard)
   @HttpCode(200)
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserById(id);
@@ -47,7 +46,7 @@ export class UsersController {
 
   @Put(':id')
   @ApiBody({ type: UpdateUserDto })
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, UserOwnershipGuard)
   async updatedUser(@Param('id', ParseUUIDPipe) id: string, @Body() user) {
     return this.usersService.updateUser(id, user);
   }
