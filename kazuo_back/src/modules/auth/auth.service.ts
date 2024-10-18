@@ -29,11 +29,13 @@ export class AuthService {
     return {
       message: 'Usuario loggeado',
       token,
+      email: user.email,
+      name: user.name
     };
   }
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
-    const { email, password } = user;
+    const { email, password} = user;
     const foundUser = await this.userRepository.getUserByEmail(email);
     if (foundUser) throw new BadRequestException('Email Registrado, ingresa');
 
@@ -43,7 +45,9 @@ export class AuthService {
       ...user,
       password: hashedPass,
     });
+    const { password: _, ...userWithoutPassword  } = createdUser;
 
-    return createdUser;
-  }
+  return userWithoutPassword;
 }
+  }
+
