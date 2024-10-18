@@ -16,14 +16,14 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { Roles } from 'src/decorators/roles.decorators';
-
+import { Role } from 'src/decorators/roles.enum';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  // @Roles(Role.ADMIN)
+  @Roles(Role.Admin)
   // @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   create(@Body() createCategory: CreateCategoryDto) {
@@ -43,14 +43,20 @@ export class CategoryController {
   }
 
   @Put(':id')
+  @Roles(Role.Admin)
+  // @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body() updateCategory: UpdateCategoryDto,
   ) {
-    return this.categoryService.update(id, updateCategoryDto);
+    return this.categoryService.update(id, updateCategory);
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
+  // @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoryService.remove(id);
   }
