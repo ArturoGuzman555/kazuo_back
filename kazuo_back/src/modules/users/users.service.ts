@@ -4,7 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from './users.repository';
-import { UpdateUserDto } from './user.dto';
+import { UpdateUserDto, } from './user.dto';
+import { CreateUserDto } from './user.dto';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
@@ -26,14 +27,14 @@ export class UsersService {
     return userWithoutPassword;
   }
 
-  async createUser(user) {
+  async createUser(createUserDto: CreateUserDto, user) {
     const existingUser = await this.userRepository.getUserByEmail(user.email);
     if (existingUser) {
       throw new ConflictException('El correo electrónico ya está registrado');
     }
     const newUser = await this.userRepository.createUser(user);
-    const { password, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+const { password, ...userWithoutPassword } = newUser; 
+
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
