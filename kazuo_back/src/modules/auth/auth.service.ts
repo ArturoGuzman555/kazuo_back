@@ -3,7 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from 'src/Entities/users.entity';
-import { UserRepository } from '../users/users.repository';
+import { UserRepository } from '../users/users.repository'
 
 @Injectable()
 export class AuthService {
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
-    const { email, password} = user;
+    const { email, password } = user;
     const foundUser = await this.userRepository.getUserByEmail(email);
     if (foundUser) throw new BadRequestException('Email Registrado, ingresa');
 
@@ -45,9 +45,7 @@ export class AuthService {
       ...user,
       password: hashedPass,
     });
-    const { password: _, ...userWithoutPassword  } = createdUser;
 
-  return userWithoutPassword;
-}
+    return {};
   }
-
+}
