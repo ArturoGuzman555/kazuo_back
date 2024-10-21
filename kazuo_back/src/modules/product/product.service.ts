@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/Entities/product.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
+import { v2 as Cloudinary } from 'cloudinary';
 
 @Injectable()
 export class ProductService {
@@ -15,7 +16,7 @@ export class ProductService {
     private readonly categoriesRepository: Repository<Category>,
   ) {}
 
-  async create(createProduct: CreateProductDto) {
+  async create(createProduct: CreateProductDto, file: Express.Multer.File) {
     const category = await this.categoriesRepository.findOne({
       where: { name: createProduct.categoryName },
     });
@@ -30,16 +31,22 @@ export class ProductService {
       throw new NotFoundException('El producto ya existe');
     } 
 
-    const newProduct = this.productsRepository.create({
-      name: createProduct.name,
-      quantity: createProduct.quantity,
-      price: createProduct.price,
-      imgUrl: createProduct.imgUrl,
-      minStock: createProduct.minStock,
-      category,
+    const uploadResult = await Cloudinary.uploader.upload(file.path, {
+      folder: 'products',
     });
 
-    return await this.productsRepository.save(newProduct);
+    if(file){
+      const newProduct = this.productsRepository.create({
+        name: createProduct.name,
+        quantity: createProduct.quantity,
+        price: createProduct.price,
+        imgUrl: uploadResult.secure_url,
+        minStock: createProduct.minStock,
+        category,
+      });
+      
+      return await this.productsRepository.save(newProduct);
+    }
   }
 
   async findAll() {
