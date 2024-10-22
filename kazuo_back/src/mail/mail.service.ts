@@ -12,7 +12,7 @@ export class MailService {
       secure: false,
       auth: {
         user: 'kazuoflaias@gmail.com',
-        pass: 'Flaias10@',
+        pass: 'bwtw abwa khef wrhv',
       },
     });
   }
