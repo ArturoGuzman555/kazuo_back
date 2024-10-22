@@ -5,6 +5,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Users } from 'src/Entities/users.entity';
 import { UserRepository } from '../users/users.repository'
 import { MailService } from 'src/mail/mail.service';
+import { v4 as uuidv4 } from 'uuid'
+import { MoreThan } from 'typeorm';
+
 
 @Injectable()
 export class AuthService {
@@ -56,4 +59,44 @@ export class AuthService {
 
     return {};
   }
+  async requestPasswordReset(email: string): Promise<string> {
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) throw new BadRequestException('Email no encontrado');
+
+    const token = uuidv4();
+    const expirationTime = new Date();
+    expirationTime.setHours(expirationTime.getHours() + 1);
+
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = expirationTime;
+    await this.userRepository.save(user);
+
+    const resetUrl = `https://frontend.com/reset-password?token=${token}`;
+    await this.mailService.sendMail(
+      email,
+      'Restablecimiento de contraseña',
+      `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetUrl}`,
+    );
+
+    return 'Correo enviado para restablecer la contraseña';
+  }
+
+  // Método para restablecer la contraseña
+  async resetPassword(token: string, newPassword: string): Promise<string> {
+    const user = await this.userRepository.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: MoreThan(new Date()), 
+      },
+    });
+    if (!user) throw new BadRequestException('Token inválido o expirado');
+
+    const hashedPass = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPass;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await this.userRepository.save(user);
+    return 'Contraseña actualizada correctamente';
+}
 }
