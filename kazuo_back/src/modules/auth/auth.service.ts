@@ -4,12 +4,14 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from 'src/Entities/users.entity';
 import { UserRepository } from '../users/users.repository'
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
   getAuth(): string {
     return 'Auth';
@@ -45,6 +47,12 @@ export class AuthService {
       ...user,
       password: hashedPass,
     });
+
+    await this.mailService.sendMail(
+      createdUser.email,
+      'Bienvenido a My App',
+      `Hola ${createdUser.name}, gracias por registrarte en nuestra aplicación.`,
+    );
 
     return {};
   }
