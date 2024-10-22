@@ -19,13 +19,14 @@ export class MailService {
 
   async sendMail(to: string, subject: string, text: string) {
     const info = await this.transporter.sendMail({
-      from: '"My App" <tu_correo@gmail.com>',
-      to, 
+      from: '"My App" <kazuoflaias@gmail.com>',
+      to,
       subject,
-      text,
+      text, 
     });
 
     console.log('Correo enviado: %s', info.messageId);
     return info;
   }
 }
+
