@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { configDotenv } from 'dotenv';
 import * as nodemailer from 'nodemailer';
 
+configDotenv({path: '.development.env'})
 @Injectable()
 export class MailService {
   private transporter;
@@ -11,21 +13,19 @@ export class MailService {
       port: 587,
       secure: false,
       auth: {
-        user: 'kazuoflaias@gmail.com',
-        pass: 'bwtw abwa khef wrhv',
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
       },
     });
   }
 
   async sendMail(to: string, subject: string, text: string) {
     const info = await this.transporter.sendMail({
-      from: '"My App" <kazuoflaias@gmail.com>',
+      from: '"Kazuo" <kazuoflaias@gmail.com>',
       to,
       subject,
       text, 
     });
-
-    console.log('Correo enviado: %s', info.messageId);
     return info;
   }
 }
