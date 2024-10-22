@@ -1,43 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { EntityRepository, Repository } from 'typeorm';
-import { Users } from 'src/Entities/users.entity';
-import { UpdateUserDto } from './user.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Users } from "src/Entities/users.entity";
+import { MoreThan, Repository } from "typeorm";
 
-@EntityRepository(Users)
-export class UserRepository extends Repository<Users> {
+@Injectable()
+export class UserRepository {
+  constructor(
+    @InjectRepository(Users)
+    private readonly userRepository: Repository<Users>,
+  ) {}
+
   async getUsers(page: number, limit: number): Promise<Users[]> {
     const skip = (page - 1) * limit;
-    return this.find({
+    return this.userRepository.find({
       take: limit,
       skip: skip,
     });
   }
 
   async getById(id: string): Promise<Users | null> {
-    return this.findOne({ where: { id } });
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async createUser(user: Partial<Users>): Promise<Users> {
-    return this.save(user);
+    return this.userRepository.save(user);
   }
 
-  async updateUser(
-    id: string,
-    updateData: Partial<UpdateUserDto>,
-  ): Promise<Users | null> {
-    await this.update(id, updateData);
-    return this.findOneBy({ id });
+  async updateUser(id: string, updateData: Partial<Users>): Promise<Users | null> {
+    await this.userRepository.update(id, updateData);
+    return this.userRepository.findOneBy({ id });
   }
 
   async deleteUser(id: string): Promise<Users | null> {
-    const user = await this.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
     if (user) {
-      await this.remove(user);
+      await this.userRepository.remove(user);
     }
     return user;
   }
 
   async getUserByEmail(email: string): Promise<Users | null> {
-    return this.findOneBy({ email });
+    return this.userRepository.findOneBy({ email });
+  }
+
+  async getUserByResetToken(token: string): Promise<Users | null> {
+    return this.userRepository.findOne({
+      where: { resetPasswordToken: token, resetPasswordExpires: MoreThan(new Date()) },
+    });
   }
 }
