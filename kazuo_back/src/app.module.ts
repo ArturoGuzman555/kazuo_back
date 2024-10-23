@@ -8,6 +8,7 @@ import { ProductModule } from './modules/product/product.module';
 import { UsersModule } from './modules/users/users.module';
 import { CategoryModule } from './modules/category/category.module';
 import { SeedsModule } from './modules/seeds.module';
+import { PaymentModule } from './modules/stripe/payment.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SeedsModule } from './modules/seeds.module';
     ProductModule,
     CategoryModule,
 
+    PaymentModule,
     SeedsModule,
 
     ConfigModule.forRoot({
