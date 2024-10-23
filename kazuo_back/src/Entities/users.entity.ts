@@ -64,7 +64,7 @@ export class Users {
   @ApiHideProperty()
   @Column({ nullable: true })
   resetPasswordToken: string;
- 
+
   @ApiHideProperty()
   @Column({ nullable: true })
   resetPasswordExpires: Date;

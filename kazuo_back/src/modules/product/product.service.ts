@@ -27,15 +27,15 @@ export class ProductService {
       where: { name: createProduct.name },
     });
 
-    if (product){
+    if (product) {
       throw new NotFoundException('El producto ya existe');
-    } 
+    }
 
     const uploadResult = await Cloudinary.uploader.upload(file.path, {
       folder: 'products',
     });
 
-    if(file){
+    if (file) {
       const newProduct = this.productsRepository.create({
         name: createProduct.name,
         quantity: createProduct.quantity,
@@ -44,7 +44,7 @@ export class ProductService {
         minStock: createProduct.minStock,
         category,
       });
-      
+
       return await this.productsRepository.save(newProduct);
     }
   }

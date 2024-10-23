@@ -19,28 +19,28 @@ export class StoreService {
     const bodega = await this.storeRepository.findOne({
       where: { name: createStore.name },
     });
-  
+
     if (bodega) {
       throw new BadRequestException('La bodega ya existe');
     }
-  
+
     const category = await this.categoryRepository.findOne({
       where: { name: createStore.categoryName },
     });
-  
+
     if (!category) {
       throw new BadRequestException('La categoría no existe');
     }
-  
+
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
     });
-  
+
     await this.storeRepository.save(newBodega);
     return newBodega;
   }
-  
+
   findAll() {
     return `This action returns all store`;
   }
