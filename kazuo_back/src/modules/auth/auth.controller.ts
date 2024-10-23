@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, LoginUserDto } from 'src/modules/users/user.dto';
-//import { ResetPasswordGuard } from './guards/resetpass-guard.guard';
+import { ResetPasswordGuard } from './guards/resetpass-guard.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @Post('/reset-password')
-  //@UseGuards(ResetPasswordGuard)
+  @UseGuards(ResetPasswordGuard)
   async resetPassword(@Body('token') token: string, @Body('password') password: string) {
     return this.authService.resetPassword(token, password);
   }
