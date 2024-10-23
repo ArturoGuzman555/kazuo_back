@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,7 +21,7 @@ export class StoreService {
     });
 
     if (bodega) {
-      throw new BadRequestException('La bodega ya existe');
+      throw new ConflictException('La bodega ya existe');
     }
 
     const category = await this.categoryRepository.findOne({
@@ -29,7 +29,7 @@ export class StoreService {
     });
 
     if (!category) {
-      throw new BadRequestException('La categoría no existe');
+      throw new NotFoundException('La categoría no existe');
     }
 
     const newBodega = this.storeRepository.create({
