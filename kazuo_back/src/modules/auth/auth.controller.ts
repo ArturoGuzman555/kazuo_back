@@ -32,7 +32,11 @@ export class AuthController {
 
   @Post('/reset-password')
   @UseGuards(ResetPasswordGuard)
-  async resetPassword(@Body('token') token: string, @Body('password') password: string) {
-    return this.authService.resetPassword(token, password);
+  async resetPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+    @Body('confirmNewPass') confirmNewPass: string, // Extraer confirmNewPass del cuerpo
+  ) {
+    return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
 }

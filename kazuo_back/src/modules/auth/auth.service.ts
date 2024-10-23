@@ -97,20 +97,27 @@ export class AuthService {
     return 'Correo enviado para restablecer la contraseña';
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<string> {
+  async resetPassword(token: string, newPassword: string, confirmNewPass: string): Promise<string> {
     
+    // Verificar que las contraseñas coincidan
+    if (newPassword !== confirmNewPass) {
+        throw new BadRequestException('Las contraseñas no coinciden');
+    }
+
+    // Buscar el usuario por el token de restablecimiento de contraseña
     const user = await this.userRepository.findOne({
       where: {
         resetPasswordToken: token,
-        resetPasswordExpires: MoreThan(new Date()),
+        resetPasswordExpires: MoreThan(new Date()), // Validar que el token no haya expirado
       },
     });
 
     if (!user) throw new BadRequestException('Token inválido o expirado');
 
-
+    // Encriptar la nueva contraseña
     const hashedPass = await bcrypt.hash(newPassword, 10);
 
+    // Actualizar la contraseña del usuario y eliminar el token de restablecimiento
     await this.userRepository.update(user.id, {
       password: hashedPass,
       resetPasswordToken: null,
@@ -118,5 +125,6 @@ export class AuthService {
     });
 
     return 'Contraseña actualizada correctamente';
-  }
+}
+
 }
