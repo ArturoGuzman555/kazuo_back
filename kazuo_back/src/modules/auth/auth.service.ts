@@ -87,7 +87,7 @@ export class AuthService {
       resetPasswordExpires: expirationTime,
     });
 
-    const resetUrl = `https://frontend.com/reset-password?token=${token}`;
+    const resetUrl = `http://localhost:3000/UpdatePass?token=${token}`;
     await this.mailService.sendMail(
       email,
       'Restablecimiento de contraseña',
