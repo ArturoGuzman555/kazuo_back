@@ -41,7 +41,7 @@ export class StoreService {
     return newBodega;
   }
   
-  async findAll() {
+  findAll() {
     return `This action returns all store`;
   }
 
