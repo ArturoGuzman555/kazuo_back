@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from './users.repository';
-import { UpdateUserDto, } from './user.dto';
+import { UpdateUserDto } from './user.dto';
 import { CreateUserDto } from './user.dto';
 import * as bcrypt from 'bcrypt';
 import { Users } from 'src/Entities/users.entity';
@@ -34,8 +34,7 @@ export class UsersService {
       throw new ConflictException('El correo electrónico ya está registrado');
     }
     const newUser = await this.userRepository.createUser(user);
-const { password, ...userWithoutPassword } = newUser; 
-
+    const { password, ...userWithoutPassword } = newUser;
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {

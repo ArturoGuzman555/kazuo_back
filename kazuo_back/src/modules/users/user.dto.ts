@@ -164,4 +164,43 @@ export class UpdateUserDto {
   @ApiHideProperty()
   @IsEmpty()
   isAdmin?: boolean = false;
+
+  
 }
+export class ResetPasswordDto {
+  @ApiProperty({
+    description: 'Token de restablecimiento de contraseña',
+    example: 'abc123token',
+  })
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+
+  @ApiProperty({
+    description: 'Nueva contraseña',
+    example: 'newPassword123',
+  })
+  @IsString()
+  @MinLength(8, { message: 'La nueva contraseña debe tener al menos 8 caracteres' })
+  @IsNotEmpty()
+  newPassword: string;
+
+  @ApiProperty({
+    description: 'Confirmar nueva contraseña',
+    example: 'newPassword123',
+  })
+  @IsString()
+  @MinLength(8)
+  @IsNotEmpty()
+  confirmNewPass: string;
+}
+export class RequestPasswordResetDto {
+  @ApiProperty({
+    description: 'Debe ser un string y un email válido.',
+    example: 'testuser@example.com',
+  })
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}
+

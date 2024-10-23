@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { configDotenv } from 'dotenv';
 import * as nodemailer from 'nodemailer';
 
-configDotenv({path: '.development.env'})
+configDotenv({ path: '.development.env' });
 @Injectable()
 export class MailService {
   private transporter;
@@ -24,9 +24,8 @@ export class MailService {
       from: '"Kazuo" <kazuoflaias@gmail.com>',
       to,
       subject,
-      text, 
+      text,
     });
     return info;
   }
 }
-

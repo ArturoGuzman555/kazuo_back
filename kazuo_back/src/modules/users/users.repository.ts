@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Users } from "src/Entities/users.entity";
-import { MoreThan, Repository } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from 'src/Entities/users.entity';
+import { MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class UserRepository {
@@ -26,7 +26,10 @@ export class UserRepository {
     return this.userRepository.save(user);
   }
 
-  async updateUser(id: string, updateData: Partial<Users>): Promise<Users | null> {
+  async updateUser(
+    id: string,
+    updateData: Partial<Users>,
+  ): Promise<Users | null> {
     await this.userRepository.update(id, updateData);
     return this.userRepository.findOneBy({ id });
   }
@@ -45,7 +48,10 @@ export class UserRepository {
 
   async getUserByResetToken(token: string): Promise<Users | null> {
     return this.userRepository.findOne({
-      where: { resetPasswordToken: token, resetPasswordExpires: MoreThan(new Date()) },
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: MoreThan(new Date()),
+      },
     });
   }
 }

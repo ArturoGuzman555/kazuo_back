@@ -7,7 +7,6 @@ import { Repository, MoreThan } from 'typeorm';
 import { MailService } from 'src/mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -23,21 +22,19 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     if (!email || !password) return 'Datos obligatorios';
-    
+
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new BadRequestException('Credenciales invalidas');
-    
-  
+
     const validPass = await bcrypt.compare(password, user.password);
     if (!validPass) throw new BadRequestException('Credenciales invalidas');
-    
 
     const payload = {
       id: user.id,
       email: user.email,
       isAdmin: user.isAdmin,
     };
-    
+
     const token = this.jwtService.sign(payload);
     return {
       message: 'Usuario loggeado',
@@ -49,20 +46,17 @@ export class AuthService {
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
     const { email, password } = user;
-    
+
     const foundUser = await this.userRepository.findOne({ where: { email } });
     if (foundUser) throw new BadRequestException('Email registrado, ingresa');
-    
-  
+
     const hashedPass = await bcrypt.hash(password, 10);
-    
 
     const createdUser = await this.userRepository.save({
       ...user,
       password: hashedPass,
     });
 
-  
     await this.mailService.sendMail(
       createdUser.email,
       'Bienvenido a Kazuo',
@@ -73,10 +67,8 @@ export class AuthService {
   }
 
   async requestPasswordReset(email: string): Promise<string> {
-
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new BadRequestException('Email no encontrado');
-
 
     const token = uuidv4();
     const expirationTime = new Date();
@@ -94,30 +86,31 @@ export class AuthService {
       `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetUrl}`,
     );
 
-    return 'Correo enviado para restablecer la contraseña';
+    return token //('Correo enviado para restablecer la contraseña');
   }
 
-  async resetPassword(token: string, newPassword: string, confirmNewPass: string): Promise<string> {
-    
-    // Verificar que las contraseñas coincidan
+  async resetPassword(
+    token: string,
+    newPassword: string,
+    confirmNewPass: string,
+  ): Promise<string> {
     if (newPassword !== confirmNewPass) {
-        throw new BadRequestException('Las contraseñas no coinciden');
+      throw new BadRequestException('Las contraseñas no coinciden');
     }
 
-    // Buscar el usuario por el token de restablecimiento de contraseña
     const user = await this.userRepository.findOne({
       where: {
         resetPasswordToken: token,
-        resetPasswordExpires: MoreThan(new Date()), // Validar que el token no haya expirado
+        resetPasswordExpires: MoreThan(new Date()),
       },
     });
 
     if (!user) throw new BadRequestException('Token inválido o expirado');
+    if(newPassword !== confirmNewPass) throw new BadRequestException('Las contrasñas deben coincidir')
+    if(newPassword.length && confirmNewPass.length < 8) throw new BadRequestException ('Debe tener una longuitud minimo de 8 caracteres')  
 
-    // Encriptar la nueva contraseña
     const hashedPass = await bcrypt.hash(newPassword, 10);
 
-    // Actualizar la contraseña del usuario y eliminar el token de restablecimiento
     await this.userRepository.update(user.id, {
       password: hashedPass,
       resetPasswordToken: null,
@@ -125,6 +118,5 @@ export class AuthService {
     });
 
     return 'Contraseña actualizada correctamente';
-}
-
+  }
 }

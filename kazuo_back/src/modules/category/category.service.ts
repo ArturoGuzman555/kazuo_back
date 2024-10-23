@@ -38,8 +38,7 @@ export class CategoryService {
       where: { id },
     });
 
-    if (!categoryFound) 
-      throw new NotFoundException('Categoría no encontrada');
+    if (!categoryFound) throw new NotFoundException('Categoría no encontrada');
 
     return categoryFound;
   }
@@ -49,8 +48,7 @@ export class CategoryService {
       where: { id },
     });
 
-    if (!categoryFound) 
-      throw new NotFoundException('Categoría no encontrada');
+    if (!categoryFound) throw new NotFoundException('Categoría no encontrada');
 
     const newCategory = { ...categoryFound, ...updateCategory };
     await this.categoryRepository.save(newCategory);
@@ -58,12 +56,13 @@ export class CategoryService {
   }
 
   async remove(id: string) {
-    const categoryDelete = await this.categoryRepository.findOne({where: {id}});
+    const categoryDelete = await this.categoryRepository.findOne({
+      where: { id },
+    });
 
-    if (!categoryDelete) 
-      throw new NotFoundException('Categoría no encontrada');
+    if (!categoryDelete) throw new NotFoundException('Categoría no encontrada');
 
-    await this.categoryRepository.remove(categoryDelete)
+    await this.categoryRepository.remove(categoryDelete);
     return { message: `La Categoría con el ID: ${id} fue eliminado` };
   }
 }
