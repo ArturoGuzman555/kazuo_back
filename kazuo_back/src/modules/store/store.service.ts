@@ -42,7 +42,7 @@ export class StoreService {
   }
   
   async findAll() {
-    return ;
+    return `This action returns all store`;
   }
 
   findOne(id: number) {
