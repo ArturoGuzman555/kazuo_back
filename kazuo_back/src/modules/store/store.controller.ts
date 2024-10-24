@@ -40,7 +40,7 @@ export class StoreController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storeService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.storeService.remove(id);
   }
 }
