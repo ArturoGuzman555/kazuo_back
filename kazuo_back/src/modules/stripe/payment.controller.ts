@@ -17,9 +17,8 @@ export class PaymentController {
 
   @Post('confirm')
   async confirmPayment(@Body() paymentIntentId: string) {
-    const paymentIntent = await this.paymentService.confirmPaymentIntent(
-      paymentIntentId,
-    );
+    const paymentIntent =
+      await this.paymentService.confirmPaymentIntent(paymentIntentId);
 
     return paymentIntent;
   }

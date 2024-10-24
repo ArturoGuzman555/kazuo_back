@@ -164,8 +164,6 @@ export class UpdateUserDto {
   @ApiHideProperty()
   @IsEmpty()
   isAdmin?: boolean = false;
-
-  
 }
 export class ResetPasswordDto {
   @ApiProperty({
@@ -181,7 +179,9 @@ export class ResetPasswordDto {
     example: 'newPassword123',
   })
   @IsString()
-  @MinLength(8, { message: 'La nueva contraseña debe tener al menos 8 caracteres' })
+  @MinLength(8, {
+    message: 'La nueva contraseña debe tener al menos 8 caracteres',
+  })
   @IsNotEmpty()
   newPassword: string;
 
@@ -203,4 +203,3 @@ export class RequestPasswordResetDto {
   @IsEmail()
   email: string;
 }
-
