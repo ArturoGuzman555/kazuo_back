@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -45,19 +46,51 @@ export class StoreService {
     return newBodega;
   }
 
-  findAll() {
-    return `This action returns all store`;
+  async findAll() {
+    return await this.storeRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} store`;
+  async findOne(id: string) {
+    const storeFound = await this.storeRepository.findOne({
+      where: { id },
+      relations: ['category'],
+    });
+
+    if (!storeFound) {
+      throw new NotFoundException(`La bodega con ${id} no fue encontrada`);
+    }
+
+    return { message: 'Bodega encontrada', storeFound };
   }
 
-  update(id: number, updateStoreDto: UpdateStoreDto) {
-    return `This action updates a #${id} store`;
+  async update(id: string, updateStore: UpdateStoreDto) {
+    const storeFound = await this.storeRepository.findOne({ where: { id } });
+
+    if (!storeFound) {
+      throw new NotFoundException('La bodega no fue encontrada');
+    }
+
+    const storeName = await this.storeRepository.findOne({
+      where: { name: updateStore.name },
+    });
+
+    if (storeName) {
+      throw new BadRequestException('El nombre de bodega ya existe');
+    }
+
+    const newStore = { ...storeFound, ...updateStore };
+    await this.storeRepository.save(newStore);
+    return { message: 'Bodega modificada exitosamente', newStore };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} store`;
+  async remove(id: string) {
+    const storeFound = await this.storeRepository.findOne({ where: { id } });
+
+    if (!storeFound) {
+      throw new NotFoundException('La bodega no existe');
+    }
+
+    const deleteUser = await this.storeRepository.delete(storeFound);
+    return { message: 'La bodega fue eliminada exitosamente', deleteUser };
   }
 }

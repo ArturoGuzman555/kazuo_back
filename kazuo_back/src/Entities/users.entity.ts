@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { v4 as uuid } from 'uuid';
 import { Product } from './product.entity';
+import { Store } from './store.entity';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -76,6 +77,6 @@ export class Users {
   })
   pay: boolean;
 
-  @OneToMany(() => Product, (product) => product.user)
-  products: Product[];
+  @OneToMany(() => Store, (store) => store.user)
+  stores: Store[];
 }
