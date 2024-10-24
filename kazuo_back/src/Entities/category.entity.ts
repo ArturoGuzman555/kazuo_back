@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,6 +21,6 @@ export class Category {
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 
-  @ManyToOne(() => Store, (store) => store.category)
-  store: Store[];
+  @OneToMany(() => Store, (store) => store.category)
+  stores: Store[];
 }
