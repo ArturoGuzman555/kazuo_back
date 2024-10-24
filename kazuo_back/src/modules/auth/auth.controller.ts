@@ -1,7 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, LoginUserDto } from 'src/modules/users/user.dto';
+import {
+  CreateUserDto,
+  LoginUserDto,
+  RequestPasswordResetDto,
+  ResetPasswordDto,
+} from 'src/modules/users/user.dto';
+import { ResetPasswordGuard } from './guards/resetpass-guard.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,5 +29,17 @@ export class AuthController {
     const result = await this.authService.signUp(users);
     console.log('Resultado de la creación de usuario:', result);
     return result;
+  }
+  @Post('/request-password-reset')
+  async requestPasswordReset(
+    @Body() requestPasswordResetDto: RequestPasswordResetDto,
+  ) {
+    return this.authService.requestPasswordReset(requestPasswordResetDto.email);
+  }
+  @Post('/reset-password')
+  @UseGuards(ResetPasswordGuard)
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    const { token, newPassword, confirmNewPass } = resetPasswordDto;
+    return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
 }

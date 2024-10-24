@@ -5,7 +5,9 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from './users.repository';
 import { UpdateUserDto } from './user.dto';
+import { CreateUserDto } from './user.dto';
 import * as bcrypt from 'bcrypt';
+import { Users } from 'src/Entities/users.entity';
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
@@ -26,14 +28,13 @@ export class UsersService {
     return userWithoutPassword;
   }
 
-  async createUser(user) {
+  async createUser(createUserDto: CreateUserDto, user) {
     const existingUser = await this.userRepository.getUserByEmail(user.email);
     if (existingUser) {
       throw new ConflictException('El correo electrónico ya está registrado');
     }
     const newUser = await this.userRepository.createUser(user);
     const { password, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
@@ -67,5 +68,8 @@ export class UsersService {
     }
     await this.userRepository.deleteUser(id);
     return { message: `Usuario con id ${id} eliminado exitosamente` };
+  }
+  async getUserByEmail(email: string): Promise<Users | null> {
+    return this.userRepository.getUserByEmail(email);
   }
 }

@@ -16,7 +16,9 @@ export class CategoriesSeed {
       where: { name: In(categoriesMock) },
     });
     for (const categoryName of categoriesMock) {
-      if (!existingCategory.some((category) => category.name === categoryName)) {
+      if (
+        !existingCategory.some((category) => category.name === categoryName)
+      ) {
         const newCategory = new Category();
         newCategory.name = categoryName;
         await this.categoryRepository.save(newCategory);

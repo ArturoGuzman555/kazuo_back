@@ -25,22 +25,27 @@ export class StoreService {
       where: { name: createStore.name },
     });
 
+
     if (bodega) {
       throw new ConflictException('La bodega ya existe');
     }
+
 
     const category = await this.categoryRepository.findOne({
       where: { name: createStore.categoryName },
     });
 
+
     if (!category) {
       throw new NotFoundException('La categoría no existe');
     }
+
 
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
     });
+
 
     await this.storeRepository.save(newBodega);
     return newBodega;

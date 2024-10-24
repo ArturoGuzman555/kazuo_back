@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UpdateUserDto } from './user.dto';
 import { Users } from 'src/Entities/users.entity';
+import { MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class UserRepository {
   constructor(
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    @InjectRepository(Users)
+    private readonly userRepository: Repository<Users>,
   ) {}
 
-  async getUsers(page: number, limit: number) {
+  async getUsers(page: number, limit: number): Promise<Users[]> {
     const skip = (page - 1) * limit;
     return this.userRepository.find({
       take: limit,
@@ -18,7 +18,7 @@ export class UserRepository {
     });
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Users | null> {
     return this.userRepository.findOne({ where: { id } });
   }
 
@@ -28,13 +28,13 @@ export class UserRepository {
 
   async updateUser(
     id: string,
-    updateData: Partial<UpdateUserDto>,
-  ): Promise<Users> {
+    updateData: Partial<Users>,
+  ): Promise<Users | null> {
     await this.userRepository.update(id, updateData);
     return this.userRepository.findOneBy({ id });
   }
 
-  async deleteUser(id: string): Promise<Users> {
+  async deleteUser(id: string): Promise<Users | null> {
     const user = await this.userRepository.findOneBy({ id });
     if (user) {
       await this.userRepository.remove(user);
@@ -44,5 +44,14 @@ export class UserRepository {
 
   async getUserByEmail(email: string): Promise<Users | null> {
     return this.userRepository.findOneBy({ email });
+  }
+
+  async getUserByResetToken(token: string): Promise<Users | null> {
+    return this.userRepository.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: MoreThan(new Date()),
+      },
+    });
   }
 }

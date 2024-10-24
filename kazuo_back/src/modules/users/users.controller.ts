@@ -20,8 +20,6 @@ import { UpdateUserDto } from './user.dto';
 import { Role } from '../../decorators/roles.enum';
 import { UserOwnershipGuard } from '../auth/guards/usership.guard';
 
-
-
 @ApiTags('users')
 @Controller('users')
 @ApiBearerAuth()
