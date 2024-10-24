@@ -24,20 +24,19 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     if (!email || !password) return 'Datos obligatorios';
-  
+
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new BadRequestException('Credenciales invalidas');
-  
-    // Comparar la contraseña ingresada con la almacenada (ya cifrada)
+
     const validPass = await bcrypt.compare(password, user.password);
     if (!validPass) throw new BadRequestException('Credenciales inválidas');
-  
+
     const payload = {
       id: user.id,
       email: user.email,
       isAdmin: user.isAdmin,
     };
-  
+
     const token = this.jwtService.sign(payload);
     return {
       message: 'Usuario loggeado',
@@ -46,8 +45,6 @@ export class AuthService {
       name: user.name,
     };
   }
-  
-
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
     const { email, password } = user;
@@ -91,7 +88,7 @@ export class AuthService {
       `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetUrl}`,
     );
 
-    return token //('Correo enviado para restablecer la contraseña');
+    return token; //('Correo enviado para restablecer la contraseña');
   }
 
   async resetPassword(
@@ -111,8 +108,12 @@ export class AuthService {
     });
 
     if (!user) throw new BadRequestException('Token inválido o expirado');
-    if(newPassword !== confirmNewPass) throw new BadRequestException('Las contrasñas deben coincidir')
-    if(newPassword.length && confirmNewPass.length < 8) throw new BadRequestException ('Debe tener una longuitud minimo de 8 caracteres')  
+    if (newPassword !== confirmNewPass)
+      throw new BadRequestException('Las contrasñas deben coincidir');
+    if (newPassword.length && confirmNewPass.length < 8)
+      throw new BadRequestException(
+        'Debe tener una longuitud minimo de 8 caracteres',
+      );
 
     const hashedPass = await bcrypt.hash(newPassword, 10);
 
