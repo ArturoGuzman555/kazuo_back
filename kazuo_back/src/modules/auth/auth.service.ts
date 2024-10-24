@@ -6,6 +6,7 @@ import { Users } from 'src/Entities/users.entity';
 import { Repository, MoreThan } from 'typeorm';
 import { MailService } from 'src/mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
+import { CryptoService } from 'src/crypto/crypto.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private readonly userRepository: Repository<Users>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   getAuth(): string {
@@ -22,19 +24,20 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     if (!email || !password) return 'Datos obligatorios';
-
+  
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new BadRequestException('Credenciales invalidas');
-
+  
+    // Comparar la contraseña ingresada con la almacenada (ya cifrada)
     const validPass = await bcrypt.compare(password, user.password);
-    if (!validPass) throw new BadRequestException('Credenciales invalidas');
-
+    if (!validPass) throw new BadRequestException('Credenciales inválidas');
+  
     const payload = {
       id: user.id,
       email: user.email,
       isAdmin: user.isAdmin,
     };
-
+  
     const token = this.jwtService.sign(payload);
     return {
       message: 'Usuario loggeado',
@@ -43,6 +46,8 @@ export class AuthService {
       name: user.name,
     };
   }
+  
+
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
     const { email, password } = user;
