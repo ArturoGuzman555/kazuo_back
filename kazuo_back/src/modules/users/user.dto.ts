@@ -88,8 +88,18 @@ export class CreateUserDto {
 
 export class LoginUserDto extends PickType(CreateUserDto, [
   'email',
-  'password',
-]) {}
+]) {
+  /**
+   * Debe ser un string con la contraseña ya encriptada
+   * @example 'contraseña_encriptada'
+   */
+  @ApiProperty({
+    description: 'La contraseña debe estar encriptada antes de enviarse.',
+    example: 'contraseña_encriptada',
+  })
+  @IsString()
+  password: string;
+}
 
 export class UpdateUserDto {
   /**
@@ -202,4 +212,12 @@ export class RequestPasswordResetDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  
+}
+
+export class EncryptPasswordDto {
+  @IsString()
+  @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
+  password: string;
 }

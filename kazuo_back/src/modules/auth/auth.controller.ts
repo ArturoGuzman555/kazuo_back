@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import {
   CreateUserDto,
+  EncryptPasswordDto,
   LoginUserDto,
   RequestPasswordResetDto,
   ResetPasswordDto,
@@ -20,7 +21,10 @@ export class AuthController {
   }
   @Post('/signin')
   async singIn(@Body() credentials: LoginUserDto) {
+    console.log(credentials)
     const { email, password } = credentials;
+
+    console.log(email, password)
     return this.authService.signIn(email, password);
   }
 
@@ -42,4 +46,12 @@ export class AuthController {
     const { token, newPassword, confirmNewPass } = resetPasswordDto;
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
+
+  @Post('encrypt-password')
+  async encryptPassword(@Body() encryptPasswordDto: EncryptPasswordDto) {
+    const { password } = encryptPasswordDto;
+    const encryptedPassword = await this.authService.hashPassword(password);
+    return { encryptedPassword };
+  }
 }
+

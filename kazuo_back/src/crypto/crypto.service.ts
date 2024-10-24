@@ -1,46 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import * as crypto from 'crypto';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { createDecipheriv, randomBytes } from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class CryptoService {
-  private readonly algorithm = 'aes-256-cbc';
-  private readonly ivLength = 16;
-  private readonly key: Buffer;
-
-  constructor() {
-    this.key = Buffer.from(process.env.CRYPTO_KEY, 'hex');
-  }
-
-  generateHash(data: string): string {
-    return crypto.createHash('sha256').update(data).digest('hex');
-  }
-
-  generateSalt(length: number = 16): string {
-    return crypto.randomBytes(length).toString('hex');
-  }
-
-  encrypt(text: string): string {
-    const iv = crypto.randomBytes(this.ivLength);
-    const cipher = crypto.createCipheriv(this.algorithm, this.key, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return iv.toString('hex') + ':' + encrypted;
-  }
-
-  decrypt(encryptedText: string): string {
-    const textParts = encryptedText.split(':');
-
-    const iv = Buffer.from(textParts.shift()!, 'hex');
-    const encryptedTextBuffer = Buffer.from(textParts.join(':'), 'hex');
-
-    if (iv.length !== this.ivLength) {
-      throw new Error('Invalid initialization vector length');
+  // Método para desencriptar la contraseña
+  async decryptPassword(encryptedPassword: string, key: Buffer, iv: Buffer): Promise<string> {
+    try {
+      const decipher = createDecipheriv('aes-256-gcm', key, iv);
+      let decrypted = decipher.update(encryptedPassword, 'base64', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al desencriptar la contraseña');
     }
+  }
 
-    const decipher = crypto.createDecipheriv(this.algorithm, this.key, iv);
-    let decrypted = decipher.update(encryptedTextBuffer);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+  // Método para comparar la contraseña desencriptada con la contraseña hasheada
+  async comparePassword(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+  }
 
-    return decrypted.toString('utf8');
+  // Generar una clave aleatoria (opcional, según tu lógica)
+  generateKey(): Buffer {
+    return randomBytes(32); // AES-256 requiere una clave de 32 bytes
   }
 }
+
