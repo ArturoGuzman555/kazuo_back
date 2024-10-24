@@ -6,10 +6,11 @@ import { Users } from 'src/Entities/users.entity';
 import { MailModule } from 'src/mail/mail.module';
 import { UsersModule } from '../users/users.module';
 import { CryptoService } from 'src/crypto/crypto.service';
+import { UserRepository } from '../users/users.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Users]), MailModule, UsersModule],
   controllers: [AuthController],
-  providers: [AuthService, CryptoService],
+  providers: [AuthService, CryptoService, UserRepository],
 })
 export class AuthModule {}

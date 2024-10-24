@@ -46,6 +46,14 @@ export class UserRepository {
     return this.userRepository.findOneBy({ email });
   }
 
+  async findOne(options: any): Promise<Users | null> {
+    return this.userRepository.findOne(options);
+  }
+
+  async update(id: string, updateData: Partial<Users>): Promise<void> {
+    await this.userRepository.update(id, updateData);
+  }
+
   async getUserByResetToken(token: string): Promise<Users | null> {
     return this.userRepository.findOne({
       where: {

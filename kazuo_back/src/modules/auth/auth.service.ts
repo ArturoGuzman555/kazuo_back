@@ -7,12 +7,12 @@ import { Repository, MoreThan } from 'typeorm';
 import { MailService } from 'src/mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CryptoService } from 'src/crypto/crypto.service';
+import { UserRepository } from '../users/users.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Users)
-    private readonly userRepository: Repository<Users>,
+    private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
     private readonly cryptoService: CryptoService,
@@ -22,39 +22,51 @@ export class AuthService {
     return 'Auth';
   }
 
-  async signIn(email: string, password: string) {
-    if (!email || !password) return 'Datos obligatorios';
-
-    const user = await this.userRepository.findOne({ where: { email } });
+  async signIn(email: string, encryptedPassword: string) {
+    const user = await this.userRepository.getUserByEmail(email);
+    
+    if (!email || !encryptedPassword) return 'Datos obligatorios';
+    
     if (!user) throw new BadRequestException('Credenciales invalidas');
+    
+    try {
+        const decryptedPassword = this.cryptoService.decrypt(encryptedPassword);
+        
+        const validPass = await bcrypt.compare(decryptedPassword, user.password);
+        if (!validPass) throw new BadRequestException('Credenciales invalidas');
+        if(decryptedPassword !== user.password) throw new BadRequestException('Credenciales invalidas crypto')
+        
+        const payload = {
+            id: user.id,
+            email: user.email,
+            isAdmin: user.isAdmin,
+        };
 
-    const validPass = await bcrypt.compare(password, user.password);
-    if (!validPass) throw new BadRequestException('Credenciales inválidas');
-
-    const payload = {
-      id: user.id,
-      email: user.email,
-      isAdmin: user.isAdmin,
-    };
-
-    const token = this.jwtService.sign(payload);
-    return {
-      message: 'Usuario loggeado',
-      token,
-      email: user.email,
-      name: user.name,
-    };
-  }
+        const token = this.jwtService.sign(payload);
+        
+        return {
+            message: 'Usuario loggeado',
+            token,
+            email: user.email,
+            name: user.name,
+        };
+    } catch (error) {
+        if (error.message.includes('Invalid initialization vector length')) {
+            throw new BadRequestException('Contraseña encriptada inválida');
+        }
+        throw new BadRequestException('Error en el proceso de inicio de sesión');
+    }
+}
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
     const { email, password } = user;
-
-    const foundUser = await this.userRepository.findOne({ where: { email } });
-    if (foundUser) throw new BadRequestException('Email registrado, ingresa');
+    const foundUser = await this.userRepository.getUserByEmail(email);
+    if (foundUser) throw new BadRequestException('Email Registrado, ingresa');
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    const createdUser = await this.userRepository.save({
+
+    const createdUser = await this.userRepository.createUser({
       ...user,
       password: hashedPass,
     });
