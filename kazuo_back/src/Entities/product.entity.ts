@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Category } from './category.entity';
 import { Users } from './users.entity';
@@ -18,14 +24,14 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column({ default: 'default-image-url-png' })
-  imgUrl: string;
-
   @Column()
   minStock: number;
 
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
+
+  @ManyToOne(() => Store, (store) => store.products)
+  store: Store;
 
   @ManyToOne(() => Users, (user) => user.stores)
   user: Users;
