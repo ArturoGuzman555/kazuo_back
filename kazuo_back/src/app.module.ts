@@ -9,6 +9,7 @@ import { UsersModule } from './modules/users/users.module';
 import { CategoryModule } from './modules/category/category.module';
 import { SeedsModule } from './modules/seeds.module';
 import { PaymentModule } from './modules/stripe/payment.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PaymentModule } from './modules/stripe/payment.module';
     AuthModule,
     ProductModule,
     CategoryModule,
+    FileUploadModule,
 
     PaymentModule,
     SeedsModule,

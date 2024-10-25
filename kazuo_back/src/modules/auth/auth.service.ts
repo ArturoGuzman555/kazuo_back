@@ -22,41 +22,32 @@ export class AuthService {
     return 'Auth';
   }
 
-  async signIn(email: string, encryptedPassword: string) {
+  async signIn(email: string, password: string) {
+    if (!email || !password) return 'Datos obligatorios';
+  
     const user = await this.userRepository.getUserByEmail(email);
-    
-    if (!email || !encryptedPassword) return 'Datos obligatorios';
-    
     if (!user) throw new BadRequestException('Credenciales invalidas');
-    
-    try {
-        const decryptedPassword = this.cryptoService.decrypt(encryptedPassword);
-        
-        const validPass = await bcrypt.compare(decryptedPassword, user.password);
-        if (!validPass) throw new BadRequestException('Credenciales invalidas');
-        if(decryptedPassword !== user.password) throw new BadRequestException('Credenciales invalidas crypto')
-        
-        const payload = {
-            id: user.id,
-            email: user.email,
-            isAdmin: user.isAdmin,
-        };
+  
+    // Comparar la contraseña ingresada con la almacenada (ya cifrada)
+    const validPass = await bcrypt.compare(password, user.password);
+    if (!validPass) throw new BadRequestException('Credenciales inválidas');
+  
+    const payload = {
+      id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
+  
+    const token = this.jwtService.sign(payload);
+    return {
+      message: 'Usuario loggeado',
+      token,
+      email: user.email,
+      name: user.name,
+    };
+  }
 
-        const token = this.jwtService.sign(payload);
-        
-        return {
-            message: 'Usuario loggeado',
-            token,
-            email: user.email,
-            name: user.name,
-        };
-    } catch (error) {
-        if (error.message.includes('Invalid initialization vector length')) {
-            throw new BadRequestException('Contraseña encriptada inválida');
-        }
-        throw new BadRequestException('Error en el proceso de inicio de sesión');
-    }
-}
+
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
     const { email, password } = user;
@@ -136,5 +127,10 @@ export class AuthService {
     });
 
     return 'Contraseña actualizada correctamente';
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
   }
 }
