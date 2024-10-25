@@ -22,68 +22,30 @@ export class AuthService {
     return 'Auth';
   }
 
-  async signIn(email: string, encryptedPassword: string) {
-    console.log('Ingreso a signIn');
-
-    // Verifica si el correo y la contraseña encriptada están presentes
-    if (!email || !encryptedPassword) {
-      throw new BadRequestException('Datos obligatorios');
-    }
-    console.log('Recibió email y encriptación');
-
-    // Busca el usuario en la base de datos
-    const user = await this.userRepository.getUserByEmail(email);
-    
-    if (!user) {
-      throw new BadRequestException('Credenciales inválidas1');
-    }
-
-    // Intenta desencriptar la contraseña recibida
-    try {
-      // Debes pasar la clave y el IV a este método, asegúrate de tenerlos
-      const key = Buffer.from(process.env.ENCRYPTION_KEY, 'base64'); // Usa tu lógica para obtener la clave
-      const iv = Buffer.from(process.env.INITIALIZATION_VECTOR, 'base64'); // Usa tu lógica para obtener el IV
-      const decryptedPassword = await this.cryptoService.decryptPassword(encryptedPassword, key, iv); // Desencripta la contraseña
-      console.log('Contraseña desencriptada:', decryptedPassword);
-      console.log('Contraseña almacenada:', user.password);
-
-      // Compara la contraseña desencriptada con la almacenada en la base de datos
-      const isPasswordValid = await this.cryptoService.comparePassword(decryptedPassword, user.password);
-      
-      if (!isPasswordValid) {
-        throw new BadRequestException('Credenciales inválidas2');
-      }
-
-      // Genera el token JWT con el payload del usuario
-      const payload = {
-        id: user.id,
-        email: user.email,
-        isAdmin: user.isAdmin,
-      };
-      
-      const token = this.jwtService.sign(payload);
-
-      // Devuelve la respuesta exitosa
-      return {
-        message: 'Usuario loggeado',
-        token,
-        email: user.email,
-        name: user.name,
-      };
-      
-    } catch (error) {
-      console.error('Error durante el inicio de sesión:', error);
-      
-      // Si falla la desencriptación, lanza un error adecuado
-      if (error instanceof BadRequestException) {
-        throw error; // Propaga el error de validación
-      }
-
-      // Manejo general de errores en el proceso de inicio de sesión
-      throw new BadRequestException('Error en el proceso de inicio de sesión');
-    }
-  }
+  async signIn(email: string, password: string) {
+    if (!email || !password) return 'Datos obligatorios';
   
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) throw new BadRequestException('Credenciales invalidas');
+  
+    // Comparar la contraseña ingresada con la almacenada (ya cifrada)
+    const validPass = await bcrypt.compare(password, user.password);
+    if (!validPass) throw new BadRequestException('Credenciales inválidas');
+  
+    const payload = {
+      id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
+  
+    const token = this.jwtService.sign(payload);
+    return {
+      message: 'Usuario loggeado',
+      token,
+      email: user.email,
+      name: user.name,
+    };
+  }
 
 
 

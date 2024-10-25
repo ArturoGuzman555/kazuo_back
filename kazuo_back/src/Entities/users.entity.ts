@@ -61,6 +61,16 @@ export class Users {
     default: false,
   })
   isAdmin: boolean;
+  @ApiProperty({
+    description: 'URL de la imagen del usuario',
+    example: 'https://example.com/image.jpg',
+  })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true, // Si es opcional
+  })
+  imgUrl?: string;
 
   @ApiHideProperty()
   @Column({ nullable: true })
@@ -80,3 +90,4 @@ export class Users {
   @OneToMany(() => Store, (store) => store.user)
   stores: Store[];
 }
+
