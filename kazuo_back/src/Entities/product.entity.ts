@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Category } from './category.entity';
 import { Users } from './users.entity';
+import { Store } from './store.entity';
 
 @Entity({ name: 'products' })
 export class Product {
