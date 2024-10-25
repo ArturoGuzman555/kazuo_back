@@ -16,12 +16,12 @@ export class ProductService {
     private readonly categoriesRepository: Repository<Category>,
   ) {}
 
-  async create(createProduct: CreateProductDto, file: Express.Multer.File) {
+  async create(createProduct: CreateProductDto) {
     const category = await this.categoriesRepository.findOne({
-      where: { name: createProduct.categoryName },
+      where: { name: createProduct.storeName },
     });
 
-    if (!category) throw new NotFoundException('Categoría no encontrada');
+    if (!category) throw new NotFoundException('Bodega no encontrada');
 
     const product = await this.productsRepository.findOne({
       where: { name: createProduct.name },
@@ -31,22 +31,15 @@ export class ProductService {
       throw new NotFoundException('El producto ya existe');
     }
 
-    const uploadResult = await Cloudinary.uploader.upload(file.path, {
-      folder: 'products',
+    const newProduct = this.productsRepository.create({
+      name: createProduct.name,
+      quantity: createProduct.quantity,
+      price: createProduct.price,
+      minStock: createProduct.minStock,
+      category,
     });
 
-    if (file) {
-      const newProduct = this.productsRepository.create({
-        name: createProduct.name,
-        quantity: createProduct.quantity,
-        price: createProduct.price,
-        imgUrl: uploadResult.secure_url,
-        minStock: createProduct.minStock,
-        category,
-      });
-
-      return await this.productsRepository.save(newProduct);
-    }
+    return await this.productsRepository.save(newProduct);
   }
 
   async findAll() {

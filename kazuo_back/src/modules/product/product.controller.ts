@@ -24,13 +24,11 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.OK)
   create(
-    @UploadedFile() file: Express.Multer.File,
     @Body() createProduct: CreateProductDto,
   ) {
-    return this.productService.create(createProduct, file);
+    return this.productService.create(createProduct);
   }
 
   @Get()
