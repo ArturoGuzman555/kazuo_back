@@ -41,7 +41,7 @@ export class FileUploadController {
       }),
     )
     file: Express.Multer.File,
-    @UserId() userId: string, // Usa el decorador para obtener el ID del usuario
+    @UserId() userId: string,
   ) {
     return await this.fileUploadService.uploadProfileImage(userId, file);
   }
