@@ -70,6 +70,13 @@ export class StoreService {
       throw new NotFoundException('La bodega no fue encontrada');
     }
 
+    const categoryFound = await this.storeRepository.findOne({
+      where: { name: updateStore.categoryName },
+    });
+    if (categoryFound) {
+      throw new ConflictException('La categoría ya existe ');
+    }
+
     const storeName = await this.storeRepository.findOne({
       where: { name: updateStore.name },
     });
