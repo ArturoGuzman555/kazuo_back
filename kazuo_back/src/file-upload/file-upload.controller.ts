@@ -1,24 +1,18 @@
-import {
-  Controller,
-  FileTypeValidator,
-  MaxFileSizeValidator,
-  Param,
-  ParseFilePipe,
-  Post,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, UploadedFile, UseGuards, UseInterceptors, Post, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
+import { UserId } from '../decorators/user-id.decorator'; // Asegúrate de importar el decorador
 
 @ApiTags('files')
+@ApiBearerAuth()
 @Controller('files')
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
-  @Post('uploadProfileImage/:id')
+  @Post('uploadProfileImage')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -33,7 +27,6 @@ export class FileUploadController {
     },
   })
   async uploadProfileImage(
-    @Param('id') userId: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -48,6 +41,7 @@ export class FileUploadController {
       }),
     )
     file: Express.Multer.File,
+    @UserId() userId: string, // Usa el decorador para obtener el ID del usuario
   ) {
     return await this.fileUploadService.uploadProfileImage(userId, file);
   }
