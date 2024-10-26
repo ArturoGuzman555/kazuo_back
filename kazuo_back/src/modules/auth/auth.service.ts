@@ -40,6 +40,7 @@ export class AuthService {
       token,
       email: user.email,
       name: user.name,
+      id: user.id,
     };
   }
 
@@ -87,7 +88,7 @@ export class AuthService {
       `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetUrl}`,
     );
 
-    return token; //('Correo enviado para restablecer la contraseña');
+    return token;
   }
 
   async resetPassword(
@@ -131,19 +132,18 @@ export class AuthService {
   }
 
   async auth0Login(profile: any) {
-    // Busca o crea el usuario en tu base de datos usando su correo de Auth0
     const email = profile.emails[0].value;
     let user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       user = await this.userRepository.createUser({
         email,
         name: profile.displayName,
-        // Puedes generar una contraseña temporal o dejar el campo vacío si no se requiere
+ 
         password: '',
       });
     }
   
-    // Genera el token de acceso JWT para el usuario
+
     const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
     const token = this.jwtService.sign(payload);
     return { user, token };
