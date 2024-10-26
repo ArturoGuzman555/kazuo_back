@@ -28,10 +28,6 @@ export class AuthService {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) throw new BadRequestException('Credenciales invalidas');
   
-    // Comparar la contraseña ingresada con la almacenada (ya cifrada)
-    const validPass = await bcrypt.compare(password, user.password);
-    if (!validPass) throw new BadRequestException('Credenciales inválidas');
-  
     const payload = {
       id: user.id,
       email: user.email,
@@ -133,4 +129,24 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(password, salt);
   }
+
+  async auth0Login(profile: any) {
+    // Busca o crea el usuario en tu base de datos usando su correo de Auth0
+    const email = profile.emails[0].value;
+    let user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      user = await this.userRepository.createUser({
+        email,
+        name: profile.displayName,
+        // Puedes generar una contraseña temporal o dejar el campo vacío si no se requiere
+        password: '',
+      });
+    }
+  
+    // Genera el token de acceso JWT para el usuario
+    const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
+    const token = this.jwtService.sign(payload);
+    return { user, token };
+  }
+  
 }
