@@ -28,10 +28,6 @@ export class AuthService {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) throw new BadRequestException('Credenciales invalidas');
   
-    // Comparar la contraseña ingresada con la almacenada (ya cifrada)
-    const validPass = await bcrypt.compare(password, user.password);
-    if (!validPass) throw new BadRequestException('Credenciales inválidas');
-  
     const payload = {
       id: user.id,
       email: user.email,
@@ -44,6 +40,7 @@ export class AuthService {
       token,
       email: user.email,
       name: user.name,
+      id: user.id,
     };
   }
 
@@ -91,7 +88,7 @@ export class AuthService {
       `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetUrl}`,
     );
 
-    return token; //('Correo enviado para restablecer la contraseña');
+    return token;
   }
 
   async resetPassword(
@@ -133,4 +130,23 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(password, salt);
   }
+
+  async auth0Login(profile: any) {
+    const email = profile.emails[0].value;
+    let user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      user = await this.userRepository.createUser({
+        email,
+        name: profile.displayName,
+ 
+        password: '',
+      });
+    }
+  
+
+    const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
+    const token = this.jwtService.sign(payload);
+    return { user, token };
+  }
+  
 }
