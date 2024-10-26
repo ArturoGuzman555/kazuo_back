@@ -14,14 +14,10 @@ export class CreateProductDto {
   price: number;
 
   @IsNotEmpty()
-  @IsString()
-  imgUrl: string;
-
-  @IsNotEmpty()
   @IsNumber()
   minStock: number;
 
   @IsNotEmpty()
   @IsString()
-  categoryName: string;
+  storeName: string;
 }

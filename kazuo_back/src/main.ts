@@ -20,6 +20,8 @@ async function bootstrap() {
   const categoriesSeed = app.get(CategoriesSeed);
   await categoriesSeed.seed();
 
+  app.enableCors();
+
   const options = new DocumentBuilder()
     .setTitle('Kazuo')
     .setDescription('Proyecto Integrador')
