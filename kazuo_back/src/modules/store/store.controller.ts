@@ -20,7 +20,7 @@ export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
   @Post('bodega')
-  create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
+  async create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
     return this.storeService.create(createStore, request);
   }
 
@@ -30,18 +30,18 @@ export class StoreController {
   }
 
   @Get('AllStoresUser/:userId')
-findAllStores(@Param('userId') userId: string) {
+async findAllStores(@Param('userId') userId: string) {
   return this.storeService.findAllStores(userId);
 }
 
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.storeService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStore: UpdateStoreDto,
   ) {
@@ -49,7 +49,7 @@ findAllStores(@Param('userId') userId: string) {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+ async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.storeService.remove(id);
   }
 }
