@@ -27,7 +27,7 @@ export class ProductService {
     });
 
     await this.productsRepository.save(newProduct);
-    return newProduct;
+    return {message: 'El producto fue creado exitosamente',newProduct};
   }
 
   async findAll() {

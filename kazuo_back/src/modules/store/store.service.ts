@@ -46,7 +46,7 @@ export class StoreService {
     });
 
     await this.storeRepository.save(newBodega);
-    return newBodega;
+    return {message: 'La bodega fue creada exitosamente',newBodega};
   }
 
   async findAll() {
