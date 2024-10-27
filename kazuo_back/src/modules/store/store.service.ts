@@ -79,7 +79,7 @@ export class StoreService {
       where: { name: updateStore.categoryName },
     });
     if (categoryName) {
-      throw new ConflictException('La categoría ya existe ');
+      throw new ConflictException('La categoría ya existe');
     }
 
     const storeName = await this.storeRepository.findOne({
