@@ -56,11 +56,21 @@ export class StoreService {
   }
 
   async findAllStores(userId: string) {
-    return await this.storeRepository.find({
+    const stores = await this.storeRepository.find({
       where: { user: { id: userId } },
-      relations: ['category', 'products'],
+      relations: ['category'],
     });
-  }
+
+    if (!stores.length) {
+      throw new NotFoundException(`La bodega con  id ${userId} no fue encontrada`);
+    }
+
+    return stores.map(({ category, ...rest }) => ({
+      ...rest,
+      categoryId: category.id,
+    }));
+  }
+
   
 
   async findOne(id: string) {
