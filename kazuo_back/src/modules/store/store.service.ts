@@ -50,6 +50,14 @@ export class StoreService {
     return await this.storeRepository.find();
   }
 
+  async findAllStores(userId: string) {
+    return await this.storeRepository.find({
+      where: { user: { id: userId } },
+      relations: ['category', 'products'],
+    });
+  }
+  
+
   async findOne(id: string) {
     const storeFound = await this.storeRepository.findOne({
       where: { id },
