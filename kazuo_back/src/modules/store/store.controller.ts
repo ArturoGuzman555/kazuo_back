@@ -17,10 +17,15 @@ import { Request } from 'express';
 @Controller('store')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
-
+  
   @Post('bodega')
   create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
     return this.storeService.create(createStore, request);
+  }
+
+  @Get('user/:userId')
+  async getStoresByUserId(@Param('userId') userId: string) {
+    return this.storeService.findByUserId(userId);
   }
 
   @Get()

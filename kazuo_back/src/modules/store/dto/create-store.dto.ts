@@ -8,4 +8,7 @@ export class CreateStoreDto {
   @IsNotEmpty()
   @IsString()
   categoryName: string;
+
+  @IsNotEmpty()
+  userId: string;
 }
