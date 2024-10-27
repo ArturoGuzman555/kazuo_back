@@ -7,7 +7,11 @@ import {
   Delete,
   ParseUUIDPipe,
   Put,
+<<<<<<< HEAD
+  Query,
+=======
   Req,
+>>>>>>> origin
 } from '@nestjs/common';
 import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
@@ -27,6 +31,12 @@ export class StoreController {
   findAll() {
     return this.storeService.findAll();
   }
+
+  @Get('AllStoresUser')
+findAllStores(@Query('userId') userId: string) {
+  return this.storeService.findAllStores(userId);
+}
+
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
