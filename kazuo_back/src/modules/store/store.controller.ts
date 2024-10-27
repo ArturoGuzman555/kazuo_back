@@ -7,6 +7,7 @@ import {
   Delete,
   ParseUUIDPipe,
   Put,
+  Query,
   Req,
 } from '@nestjs/common';
 import { StoreService } from './store.service';
@@ -32,6 +33,12 @@ export class StoreController {
   findAll() {
     return this.storeService.findAll();
   }
+
+  @Get('AllStoresUser/:userId')
+findAllStores(@Param('userId') userId: string) {
+  return this.storeService.findAllStores(userId);
+}
+
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {

@@ -89,4 +89,7 @@ export class Users {
 
   @OneToMany(() => Store, (store) => store.user)
   stores: Store[];
+
+  @OneToMany(()=> Product, (products) => products.user)
+  products: Product[]
 }

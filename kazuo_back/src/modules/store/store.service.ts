@@ -57,6 +57,24 @@ export class StoreService {
     }));
   }
 
+  async findAllStores(userId: string) {
+    const stores = await this.storeRepository.find({
+      where: { user: { id: userId } },
+      relations: ['category'],
+    });
+
+    if (!stores.length) {
+      throw new NotFoundException(`La bodega con  id ${userId} no fue encontrada`);
+    }
+
+    return stores.map(({ category, ...rest }) => ({
+      ...rest,
+      categoryId: category.id,
+    }));
+  }
+
+  
+
   async findOne(id: string) {
     const storeFound = await this.storeRepository.findOne({
       where: { id },
