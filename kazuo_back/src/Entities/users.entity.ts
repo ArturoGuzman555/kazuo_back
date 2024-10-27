@@ -93,4 +93,3 @@ export class Users {
   @OneToMany(()=> Product, (products) => products.user)
   products: Product[]
 }
-

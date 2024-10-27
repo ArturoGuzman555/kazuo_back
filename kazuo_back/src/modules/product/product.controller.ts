@@ -10,25 +10,22 @@ import {
   Put,
   ParseUUIDPipe,
   UseGuards,
-  UseInterceptors,
-  UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @HttpCode(HttpStatus.OK)
-  create(
-    @Body() createProduct: CreateProductDto,
-  ) {
-    return this.productService.create(createProduct);
+  async create(@Req() request: Request, @Body() createProduct: CreateProductDto) {
+    const product = await this.productService.create(createProduct, request);
+    return product;
   }
 
   @Get()

@@ -18,6 +18,5 @@ export class CreateProductDto {
   minStock: number;
 
   @IsNotEmpty()
-  @IsString()
-  storeName: string;
+  userId: string
 }

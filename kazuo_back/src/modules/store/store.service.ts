@@ -1,7 +1,5 @@
 import {
-  BadRequestException,
   ConflictException,
-  ExecutionContext,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -23,7 +21,7 @@ export class StoreService {
   ) {}
 
   async create(createStore: CreateStoreDto, request: any) {
-    const user: Users = request.user; // Obtener el usuario logeado
+    const user: Users = request.user;
 
     const bodega = await this.storeRepository.findOne({
       where: { name: createStore.name },
@@ -44,15 +42,19 @@ export class StoreService {
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
-      user: user, // Asociar el usuario logeado
+      user: {id: createStore.userId},
     });
 
     await this.storeRepository.save(newBodega);
-    return newBodega;
+    return {message: 'La bodega fue creada exitosamente',newBodega};
   }
 
   async findAll() {
-    return await this.storeRepository.find();
+     const hola = await this.storeRepository.find({relations:{category:true}});    
+     return hola.map(({ category, ...rest }) => ({
+      ...rest,
+      categoryId: category.id,
+    }));
   }
 
   async findAllStores(userId: string) {
@@ -88,29 +90,28 @@ export class StoreService {
 
   async update(id: string, updateStore: UpdateStoreDto) {
     const storeFound = await this.storeRepository.findOne({ where: { id } });
-
+  
     if (!storeFound) {
       throw new NotFoundException('La bodega no fue encontrada');
     }
-
-    const categoryName = await this.storeRepository.findOne({
+  
+    const category = await this.categoryRepository.findOne({
       where: { name: updateStore.categoryName },
     });
-    if (categoryName) {
-      throw new ConflictException('La categoría ya existe');
+  
+    if (!category) {
+      throw new NotFoundException('La categoría no existe');
     }
-
-    const storeName = await this.storeRepository.findOne({
-      where: { name: updateStore.name },
-    });
-
-    if (storeName) {
-      throw new BadRequestException('El nombre de bodega ya existe');
-    }
-
-    const newStore = { ...storeFound, ...updateStore };
+  
+    const newStore = { ...storeFound, ...updateStore, category: category };
+  
     await this.storeRepository.save(newStore);
-    return { message: 'Bodega modificada exitosamente', newStore };
+  
+    return {
+      message: 'Bodega modificada exitosamente',
+      name: newStore.name,
+      categoryId: newStore.category.id,
+    };
   }
 
   async remove(id: string) {
@@ -122,5 +123,21 @@ export class StoreService {
 
     const deleteUser = await this.storeRepository.delete(storeFound);
     return { message: 'La bodega fue eliminada exitosamente', deleteUser };
+  }
+
+  async findByUserId(userId: string) {
+    const stores = await this.storeRepository.find({
+      where: { user: { id: userId } },
+      relations: ['category'],
+    });
+
+    if (!stores.length) {
+      throw new NotFoundException(`No stores found for user with ID ${userId}`);
+    }
+
+    return stores.map(({ category, ...rest }) => ({
+      ...rest,
+      categoryId: category.id,
+    }));
   }
 }
