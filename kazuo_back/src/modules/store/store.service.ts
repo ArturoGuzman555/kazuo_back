@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ExecutionContext,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -18,9 +19,12 @@ export class StoreService {
     private readonly storeRepository: Repository<Store>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    private readonly executionContext: ExecutionContext,
   ) {}
 
   async create(createStore: CreateStoreDto) {
+    const user = this.executionContext.switchToHttp().getRequest().user;
+
     const bodega = await this.storeRepository.findOne({
       where: { name: createStore.name },
     });
@@ -40,6 +44,7 @@ export class StoreService {
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
+      user: user,
     });
 
     await this.storeRepository.save(newBodega);
@@ -74,7 +79,7 @@ export class StoreService {
       where: { name: updateStore.categoryName },
     });
     if (categoryName) {
-      throw new ConflictException('La categoría ya existe ');
+      throw new ConflictException('La categoría ya existe');
     }
 
     const storeName = await this.storeRepository.findOne({
