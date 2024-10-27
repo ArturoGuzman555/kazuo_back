@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ExecutionContext,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from 'src/Entities/store.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
+import { Users } from 'src/Entities/users.entity';
 
 @Injectable()
 export class StoreService {
@@ -20,7 +22,9 @@ export class StoreService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async create(createStore: CreateStoreDto) {
+  async create(createStore: CreateStoreDto, request: any) {
+    const user: Users = request.user; // Obtener el usuario logeado
+
     const bodega = await this.storeRepository.findOne({
       where: { name: createStore.name },
     });
@@ -40,6 +44,7 @@ export class StoreService {
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
+      user: user, // Asociar el usuario logeado
     });
 
     await this.storeRepository.save(newBodega);
@@ -82,7 +87,7 @@ export class StoreService {
       where: { name: updateStore.categoryName },
     });
     if (categoryName) {
-      throw new ConflictException('La categoría ya existe ');
+      throw new ConflictException('La categoría ya existe');
     }
 
     const storeName = await this.storeRepository.findOne({
