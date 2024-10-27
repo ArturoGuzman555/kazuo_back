@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from 'src/Entities/store.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
+import { Users } from 'src/Entities/users.entity';
 
 @Injectable()
 export class StoreService {
@@ -19,11 +20,10 @@ export class StoreService {
     private readonly storeRepository: Repository<Store>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-    private readonly executionContext: ExecutionContext,
   ) {}
 
-  async create(createStore: CreateStoreDto) {
-    const user = this.executionContext.switchToHttp().getRequest().user;
+  async create(createStore: CreateStoreDto, request: any) {
+    const user: Users = request.user; // Obtener el usuario logeado
 
     const bodega = await this.storeRepository.findOne({
       where: { name: createStore.name },
@@ -44,7 +44,7 @@ export class StoreService {
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
-      user: user,
+      user: user, // Asociar el usuario logeado
     });
 
     await this.storeRepository.save(newBodega);
