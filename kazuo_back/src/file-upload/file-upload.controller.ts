@@ -31,7 +31,7 @@ export class FileUploadController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
-            maxSize: 200000, // Tamaño máximo permitido de 200 KB
+            maxSize: 2000000, // Tamaño máximo permitido de 200 KB
             message: 'La imagen excede el tamaño permitido',
           }),
           new FileTypeValidator({
@@ -41,7 +41,7 @@ export class FileUploadController {
       }),
     )
     file: Express.Multer.File,
-    @UserId() userId: string, // Usa el decorador para obtener el ID del usuario
+    @UserId() userId: string,
   ) {
     return await this.fileUploadService.uploadProfileImage(userId, file);
   }
