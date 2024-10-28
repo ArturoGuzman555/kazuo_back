@@ -15,9 +15,21 @@ export class ProductService {
     @InjectRepository(Category)
     private readonly categoriesRepository: Repository<Category>,
   ) {}
+  
+  async create(createProduct: CreateProductDto) {
+    const category = await this.categoriesRepository.findOne({
+      where: { name: createProduct.storeId },
+    });
 
-  async create(createProduct: CreateProductDto, request: any) {
-    const user = request.user;
+    if (!category) throw new NotFoundException('Bodega no encontrada');
+
+    const product = await this.productsRepository.findOne({
+      where: { name: createProduct.name },
+    });
+
+    if (product) {
+      throw new NotFoundException('El producto ya existe');
+    }
     const newProduct = this.productsRepository.create({
       name: createProduct.name,
       quantity: createProduct.quantity,
@@ -66,4 +78,11 @@ export class ProductService {
       message: `El producto con el ID: ${id} fue eliminado exitosamente`,
     };
   }
+  async getProductsByStoreId(storeId: string): Promise<Product[]> {
+    return await this.productsRepository.find({
+      where: { store: { id: storeId } },
+      relations: ['store'], 
+    });
+  }
 }
+  

@@ -16,6 +16,9 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Product } from 'src/Entities/product.entity';
+=======
 import { Request } from 'express';
 
 @Controller('product')
@@ -55,5 +58,10 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productService.remove(id);
+  }
+
+  @Get('store/:storeId')
+  async getProductsByStoreId(@Param('storeId') storeId: string): Promise<Product[]> {
+    return await this.productService.getProductsByStoreId(storeId);
   }
 }
