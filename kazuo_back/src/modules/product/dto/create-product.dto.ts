@@ -24,5 +24,4 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
-
 }
