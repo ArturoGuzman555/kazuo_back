@@ -95,4 +95,3 @@ export class Users {
   @JoinColumn({name: 'product_id'})
   products: Product[]
 }
-

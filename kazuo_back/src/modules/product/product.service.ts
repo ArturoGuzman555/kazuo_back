@@ -15,7 +15,7 @@ export class ProductService {
     @InjectRepository(Category)
     private readonly categoriesRepository: Repository<Category>,
   ) {}
-
+  
   async create(createProduct: CreateProductDto) {
     const category = await this.categoriesRepository.findOne({
       where: { name: createProduct.storeId },
@@ -30,16 +30,16 @@ export class ProductService {
     if (product) {
       throw new NotFoundException('El producto ya existe');
     }
-
     const newProduct = this.productsRepository.create({
       name: createProduct.name,
       quantity: createProduct.quantity,
       price: createProduct.price,
       minStock: createProduct.minStock,
-      category,
+      user: {id: createProduct.userId},
     });
 
-    return await this.productsRepository.save(newProduct);
+    await this.productsRepository.save(newProduct);
+    return {message: 'El producto fue creado exitosamente',newProduct};
   }
 
   async findAll() {
