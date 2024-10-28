@@ -78,4 +78,11 @@ export class ProductService {
       message: `El producto con el ID: ${id} fue eliminado exitosamente`,
     };
   }
+  async getProductsByStoreId(storeId: string): Promise<Product[]> {
+    return await this.productsRepository.find({
+      where: { store: { id: storeId } },
+      relations: ['store'],  // Incluye la tienda en la respuesta si es necesario
+    });
+  }
 }
+  
