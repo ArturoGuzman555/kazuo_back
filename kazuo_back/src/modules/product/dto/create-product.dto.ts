@@ -19,5 +19,5 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  storeId: string
+  userId: string
 }
