@@ -23,4 +23,5 @@ export class Category {
 
   @OneToMany(() => Store, (store) => store.category)
   stores: Store[];
+
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,29 +6,31 @@ import { Product } from 'src/Entities/product.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
 import { v2 as Cloudinary } from 'cloudinary';
+import { StoreService } from '../store/store.service';
+import { Store } from 'src/Entities/store.entity';
+import { StoreRepository } from '../store/store.repository';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-    @InjectRepository(Category)
-    private readonly categoriesRepository: Repository<Category>,
+    private readonly storeRepository: StoreRepository,
   ) {}
   
-  async create(createProduct: CreateProductDto, request: unknown) {
-    const category = await this.categoriesRepository.findOne({
-      where: { name: createProduct.storeId },
-    });
-
-    if (!category) throw new NotFoundException('Bodega no encontrada');
-
+  async create(createProduct: CreateProductDto) {
+    const store = await this.storeRepository.findById(createProduct.storeId);
+  
+    if (!store) {
+      throw new NotFoundException('Bodega no encontrada');
+    }
+  
     const product = await this.productsRepository.findOne({
       where: { name: createProduct.name },
     });
-
+  
     if (product) {
-      throw new NotFoundException('El producto ya existe');
+      throw new ConflictException('El producto ya existe');
     }
     const newProduct = this.productsRepository.create({
       name: createProduct.name,
@@ -36,12 +38,16 @@ export class ProductService {
       price: createProduct.price,
       minStock: createProduct.minStock,
       user: { id: createProduct.userId },
-      store: { id: createProduct.storeId }, 
-    });
-
+      store: { id: createProduct.storeId },
+    });
+  
     await this.productsRepository.save(newProduct);
-    return {message: 'El producto fue creado exitosamente',newProduct};
+    return { message: 'El producto fue creado exitosamente', newProduct };
   }
+
+  
+
+  
 
   async findAll() {
     const all = await this.productsRepository.find({
