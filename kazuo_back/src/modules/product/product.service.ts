@@ -36,8 +36,9 @@ export class ProductService {
       quantity: createProduct.quantity,
       price: createProduct.price,
       minStock: createProduct.minStock,
-      category,
-    });
+      user: { id: createProduct.userId },
+      store: { id: createProduct.storeId }, 
+    });
 
     return await this.productsRepository.save(newProduct);
   }

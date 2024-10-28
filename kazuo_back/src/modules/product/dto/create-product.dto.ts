@@ -20,4 +20,8 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   storeId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
 }
