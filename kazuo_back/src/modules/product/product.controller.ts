@@ -25,8 +25,8 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  async create(@Req() request: Request, @Body() createProduct: CreateProductDto) {
-    const product = await this.productService.create(createProduct, request);
+  async create(@Body() createProduct: CreateProductDto) {
+    const product = await this.productService.create(createProduct); // Solo el argumento necesario
     return product;
   }
 

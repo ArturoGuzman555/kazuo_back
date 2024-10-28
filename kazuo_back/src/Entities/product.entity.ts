@@ -27,12 +27,12 @@ export class Product {
   @Column()
   minStock: number;
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
-
   @ManyToOne(() => Store, (store) => store.products)
   store: Store;
 
   @ManyToOne(() => Users, (user) => user.stores)
   user: Users;
+
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 }
