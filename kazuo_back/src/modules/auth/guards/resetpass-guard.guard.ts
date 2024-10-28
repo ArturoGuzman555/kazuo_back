@@ -14,13 +14,21 @@ export class ResetPasswordGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const token = request.body.token;
-    const newPassword = request.body.password;
-    const confirmNewPass = request.body.password;
+    const newPassword = request.body.newPassword;  // Cambiado para obtener 'newPassword'
+    const confirmNewPass = request.body.confirmNewPass;  // Cambiado para obtener 'confirmNewPass'
 
     if (!token) {
       throw new BadRequestException(
         'Se requiere un token para restablecer la contraseña',
       );
+    }
+
+    if (!newPassword || !confirmNewPass) {
+      throw new BadRequestException('Debe proporcionar y confirmar la nueva contraseña');
+    }
+
+    if (newPassword !== confirmNewPass) {
+      throw new BadRequestException('Las contraseñas no coinciden');
     }
 
     return true;

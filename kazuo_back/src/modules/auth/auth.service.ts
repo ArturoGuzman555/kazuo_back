@@ -26,7 +26,11 @@ export class AuthService {
     if (!email || !password) return 'Datos obligatorios';
   
     const user = await this.userRepository.getUserByEmail(email);
-    if (!user) throw new BadRequestException('Credenciales invalidas');
+    if (!user) throw new BadRequestException('Credenciales inválidas');
+  
+    // Comparar la contraseña proporcionada con la contraseña almacenada
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw new BadRequestException('Credenciales inválidas');
   
     const payload = {
       id: user.id,
@@ -43,6 +47,7 @@ export class AuthService {
       id: user.id,
     };
   }
+  
 
 
 
@@ -95,36 +100,34 @@ export class AuthService {
     token: string,
     newPassword: string,
     confirmNewPass: string,
-  ): Promise<string> {
+): Promise<string> {
     if (newPassword !== confirmNewPass) {
-      throw new BadRequestException('Las contraseñas no coinciden');
+        throw new BadRequestException('Las contraseñas no coinciden');
+    }
+
+    if (newPassword.length < 8) {
+        throw new BadRequestException('La contraseña debe tener al menos 8 caracteres');
     }
 
     const user = await this.userRepository.findOne({
-      where: {
-        resetPasswordToken: token,
-        resetPasswordExpires: MoreThan(new Date()),
-      },
+        where: {
+            resetPasswordToken: token,
+            resetPasswordExpires: MoreThan(new Date()),
+        },
     });
 
     if (!user) throw new BadRequestException('Token inválido o expirado');
-    if (newPassword !== confirmNewPass)
-      throw new BadRequestException('Las contrasñas deben coincidir');
-    if (newPassword.length && confirmNewPass.length < 8)
-      throw new BadRequestException(
-        'Debe tener una longuitud minimo de 8 caracteres',
-      );
 
     const hashedPass = await bcrypt.hash(newPassword, 10);
 
     await this.userRepository.update(user.id, {
-      password: hashedPass,
-      resetPasswordToken: null,
-      resetPasswordExpires: null,
+        password: hashedPass,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
     });
 
     return 'Contraseña actualizada correctamente';
-  }
+}
 
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
