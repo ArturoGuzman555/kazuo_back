@@ -18,7 +18,6 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Product } from 'src/Entities/product.entity';
-=======
 import { Request } from 'express';
 
 @Controller('product')
