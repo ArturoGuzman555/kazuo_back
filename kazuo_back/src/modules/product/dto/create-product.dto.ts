@@ -19,5 +19,5 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  storeName: string;
+  storeId: string;
 }

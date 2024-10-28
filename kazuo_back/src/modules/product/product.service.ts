@@ -18,7 +18,7 @@ export class ProductService {
 
   async create(createProduct: CreateProductDto) {
     const category = await this.categoriesRepository.findOne({
-      where: { name: createProduct.storeName },
+      where: { name: createProduct.storeId },
     });
 
     if (!category) throw new NotFoundException('Bodega no encontrada');

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { v4 as uuid } from 'uuid';
 import { Product } from './product.entity';
@@ -88,9 +88,11 @@ export class Users {
   pay: boolean;
 
   @OneToMany(() => Store, (store) => store.user)
+  @JoinColumn({name: 'store_Id'})
   stores: Store[];
 
   @OneToMany(()=> Product, (products) => products.user)
+  @JoinColumn({name: 'product_id'})
   products: Product[]
 }
 
