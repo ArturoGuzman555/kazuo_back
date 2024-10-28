@@ -1,4 +1,3 @@
-// src/auth/strategies/auth0.strategy.ts
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-auth0';

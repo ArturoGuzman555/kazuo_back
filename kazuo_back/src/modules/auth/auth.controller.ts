@@ -42,11 +42,12 @@ export class AuthController {
     return this.authService.requestPasswordReset(requestPasswordResetDto.email);
   }
   @Post('/reset-password')
-  @UseGuards(ResetPasswordGuard)
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+@UseGuards(ResetPasswordGuard)
+async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     const { token, newPassword, confirmNewPass } = resetPasswordDto;
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
-  }
+}
+
 
   @Post('encrypt-password')
   async encryptPassword(@Body() encryptPasswordDto: EncryptPasswordDto) {
