@@ -10,6 +10,7 @@ import { CategoryModule } from './modules/category/category.module';
 import { SeedsModule } from './modules/seeds.module';
 import { PaymentModule } from './modules/stripe/payment.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     ProductModule,
     CategoryModule,
     FileUploadModule,
+    WebsocketModule,
 
     PaymentModule,
     SeedsModule,
