@@ -45,6 +45,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       id: user.id,
+      igmUrl: user.imgUrl
     }
   }
   
