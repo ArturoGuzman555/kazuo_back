@@ -91,5 +91,27 @@ export class ProductService {
       relations: ['store'], 
     });
   }
+
+  async bulkCreate(products: CreateProductDto[]) {
+    const createdProducts = await Promise.all(products.map(async (product) => {
+      const store = await this.storeRepository.findById(product.storeId);
+      if (!store) {
+        throw new NotFoundException(`Bodega con ID ${product.storeId} no encontrada`);
+      }
+  
+      const newProduct = this.productsRepository.create({
+        name: product.name,
+        quantity: product.quantity,
+        price: product.price,
+        minStock: product.minStock,
+        user: { id: product.userId },
+        store: { id: product.storeId },
+      });
+  
+      return await this.productsRepository.save(newProduct);
+    }));
+  
+    return createdProducts;
+  }
 }
   

@@ -30,6 +30,11 @@ export class ProductController {
     return product;
   }
 
+  @Post('bulk')
+  async bulkCreate(@Body() products: CreateProductDto[]){
+    return this.productService.bulkCreate(products);
+  }
+
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
