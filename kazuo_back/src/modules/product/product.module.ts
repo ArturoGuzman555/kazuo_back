@@ -7,9 +7,11 @@ import { Category } from 'src/Entities/category.entity';
 import { StoreModule } from '../store/store.module';
 import { Store } from 'src/Entities/store.entity';
 import { StoreRepository } from '../store/store.repository';
+import { MailModule } from 'src/mail/mail.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Category, Store])],
+  imports: [TypeOrmModule.forFeature([Product, Category, Store]),MailModule, UsersModule],
   controllers: [ProductController],
   providers: [ProductService, StoreRepository],
 })

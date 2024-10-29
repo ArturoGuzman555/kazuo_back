@@ -68,7 +68,8 @@ export class Users {
   @Column({
     type: 'varchar',
     length: 255,
-    nullable: true, // Si es opcional
+    nullable: true,
+    default: 'https://res.cloudinary.com/dytdzrpgq/image/upload/v1729872252/wulqmufihk7yojgrwwks.jpg'
   })
   imgUrl?: string;
 

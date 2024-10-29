@@ -14,19 +14,14 @@ export class FileUploadService {
   ) {}
 
   async uploadProfileImage(userId: string, file: Express.Multer.File) {
-    // Buscar el usuario por ID
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new NotFoundException('Usuario no encontrado');
-
-    // Subir la imagen usando el repositorio de subida de archivos
+  
     const uploadedImage = await this.fileUploadRepository.uploadImage(file);
-
-    // Actualizar la propiedad `imgUrl` del usuario con la URL de la imagen subida
     await this.userRepository.update(userId, {
       imgUrl: uploadedImage.secure_url,
     });
-
-    // Devolver el usuario actualizado
-    return await this.userRepository.findOneBy({ id: userId });
+    return { ...user, imgUrl: uploadedImage.secure_url };
   }
+  
 }

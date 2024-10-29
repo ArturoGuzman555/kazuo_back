@@ -120,6 +120,15 @@ export class StoreService {
     if (!storeFound) {
       throw new NotFoundException('La bodega no existe');
     }
+    
+    const products = await this.storeRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
+  
+    if (products && products.products.length > 0) {
+      throw new ConflictException('No se puede eliminar la tienda porque contiene productos');
+    }
 
     const deleteUser = await this.storeRepository.delete(storeFound);
     return { message: 'La bodega fue eliminada exitosamente', deleteUser };
