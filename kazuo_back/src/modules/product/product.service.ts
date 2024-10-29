@@ -9,6 +9,7 @@ import { v2 as Cloudinary } from 'cloudinary';
 import { StoreService } from '../store/store.service';
 import { Store } from 'src/Entities/store.entity';
 import { StoreRepository } from '../store/store.repository';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class ProductService {
@@ -16,6 +17,7 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
     private readonly storeRepository: StoreRepository,
+    private readonly mailService: MailService,
   ) {}
   
   async create(createProduct: CreateProductDto) {
@@ -76,15 +78,27 @@ export class ProductService {
   async remove(id: string) {
     const deleteProduct = await this.productsRepository.findOne({
       where: { id },
+      relations: ['user'], // Carga el usuario relacionado
     });
-
+  
     if (!deleteProduct) throw new NotFoundException('Producto no encontrado');
-
+  
+    // Asegúrate de que deleteProduct.user.email exista antes de enviar el correo
+    if (deleteProduct.user && deleteProduct.user.email) {
+      await this.mailService.sendMail(
+        deleteProduct.user.email,
+        'Producto eliminado',
+        `El producto con ID ${id} y nombre ${deleteProduct.name} fue eliminado`
+      );
+    }
+  
     await this.productsRepository.remove(deleteProduct);
+  
     return {
       message: `El producto con el ID: ${id} fue eliminado exitosamente`,
     };
   }
+  
   async getProductsByStoreId(storeId: string): Promise<Product[]> {
     return await this.productsRepository.find({
       where: { store: { id: storeId } },
