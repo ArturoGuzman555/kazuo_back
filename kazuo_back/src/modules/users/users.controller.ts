@@ -29,7 +29,7 @@ export class UsersController {
   @Get()
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  @Roles(Role.Admin)
+  @Roles(Role.SuperAdmin)
   @UseGuards(AuthGuard, RolesGuard)
   async getUsers(
     @Query('page') page: number = 1,

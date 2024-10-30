@@ -7,12 +7,13 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Param,
 } from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
-import { UserId } from '../decorators/user-id.decorator'; // Asegúrate de importar el decorador
+import { UserId } from '../decorators/user-id.decorator'; 
 
 @ApiTags('files')
 @ApiBearerAuth()
@@ -20,8 +21,7 @@ import { UserId } from '../decorators/user-id.decorator'; // Asegúrate de impor
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
-  @Post('uploadProfileImage')
-  @UseGuards(AuthGuard)
+  @Post('uploadProfileImage/:userId')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -36,6 +36,7 @@ export class FileUploadController {
     },
   })
   async uploadProfileImage(
+    @Param('userId') userId: string,  
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -50,7 +51,6 @@ export class FileUploadController {
       }),
     )
     file: Express.Multer.File,
-    @UserId() userId: string,
   ) {
     return await this.fileUploadService.uploadProfileImage(userId, file);
   }
