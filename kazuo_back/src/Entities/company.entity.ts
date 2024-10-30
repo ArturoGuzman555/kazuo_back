@@ -2,11 +2,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Users } from './users.entity';
 
 @Entity({ name: 'companies' })
@@ -19,7 +20,7 @@ export class Company {
   id: string;
 
   @ApiProperty({
-    description: 'Nombre de la compañía del usuario',
+    description: 'Nombre de la compañía',
     example: 'Mi Empresa S.A.',
   })
   @Column({
@@ -27,7 +28,7 @@ export class Company {
     length: 100,
     nullable: true,
   })
-  company: string;
+  name: string;
 
   @ApiProperty({
     description: 'Dirección de la compañía',
@@ -52,13 +53,17 @@ export class Company {
   })
   email: string;
 
-  @ManyToOne(() => Users, (user) => user.companies)
-  @JoinColumn({ name: 'userId' })
-  user: Users;
-
-  @Column({
-    type: 'uuid',
-    nullable: false,
+  @ManyToMany(() => Users, (user) => user.companies)
+  @JoinTable({ 
+    name: 'user_company',
+    joinColumn: {
+      name: 'company_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
   })
-  userId: string;
+  users: Users[]; 
 }

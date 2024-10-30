@@ -14,12 +14,15 @@ import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Request } from 'express';
+import { Role } from 'src/decorators/roles.enum';
+import { Roles } from 'src/decorators/roles.decorators';
 
 @Controller('store')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
   @Post('bodega')
+  @Roles(Role.Admin)
   async create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
     return this.storeService.create(createStore, request);
   }
@@ -45,6 +48,7 @@ export class StoreController {
   }
 
   @Put(':id')
+  @Roles(Role.Admin)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStore: UpdateStoreDto,
