@@ -21,7 +21,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     FileUploadModule,
     WebsocketModule,
 
-    PaymentModule,
+    // PaymentModule,
     SeedsModule,
 
     ConfigModule.forRoot({
