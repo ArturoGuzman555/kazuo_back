@@ -5,14 +5,20 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class CryptoService {
   // Método para desencriptar la contraseña
-  async decryptPassword(encryptedPassword: string, key: Buffer, iv: Buffer): Promise<string> {
+  async decryptPassword(
+    encryptedPassword: string,
+    key: Buffer,
+    iv: Buffer,
+  ): Promise<string> {
     try {
       const decipher = createDecipheriv('aes-256-gcm', key, iv);
       let decrypted = decipher.update(encryptedPassword, 'base64', 'utf8');
       decrypted += decipher.final('utf8');
       return decrypted;
     } catch (error) {
-      throw new InternalServerErrorException('Error al desencriptar la contraseña');
+      throw new InternalServerErrorException(
+        'Error al desencriptar la contraseña',
+      );
     }
   }
 
@@ -29,4 +35,3 @@ export class CryptoService {
     return randomBytes(32); // AES-256 requiere una clave de 32 bytes
   }
 }
-

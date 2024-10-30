@@ -66,19 +66,6 @@ export class CreateUserDto {
   name: string;
 
   /**
-   * Debe ser un string entre 3 y 20 caracteres
-   * @example Empresa 1
-   */
-  @ApiProperty({
-    description: 'Debe ser un string entre 3 y 50 caracteres.',
-    example: 'Empresa 1',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @Length(3, 50)
-  company: string;
-
-  /**
    * Propiedad oculta
    */
   @ApiHideProperty()
@@ -86,9 +73,7 @@ export class CreateUserDto {
   isAdmin?: boolean;
 }
 
-export class LoginUserDto extends PickType(CreateUserDto, [
-  'email',
-]) {
+export class LoginUserDto extends PickType(CreateUserDto, ['email']) {
   /**
    * Debe ser un string con la contraseña ya encriptada
    * @example 'contraseña_encriptada'
@@ -212,8 +197,6 @@ export class RequestPasswordResetDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
-
-  
 }
 
 export class EncryptPasswordDto {
