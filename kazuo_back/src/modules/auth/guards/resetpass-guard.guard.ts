@@ -14,8 +14,8 @@ export class ResetPasswordGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const token = request.body.token;
-    const newPassword = request.body.newPassword;  // Cambiado para obtener 'newPassword'
-    const confirmNewPass = request.body.confirmNewPass;  // Cambiado para obtener 'confirmNewPass'
+    const newPassword = request.body.newPassword; // Cambiado para obtener 'newPassword'
+    const confirmNewPass = request.body.confirmNewPass; // Cambiado para obtener 'confirmNewPass'
 
     if (!token) {
       throw new BadRequestException(
@@ -24,7 +24,9 @@ export class ResetPasswordGuard implements CanActivate {
     }
 
     if (!newPassword || !confirmNewPass) {
-      throw new BadRequestException('Debe proporcionar y confirmar la nueva contraseña');
+      throw new BadRequestException(
+        'Debe proporcionar y confirmar la nueva contraseña',
+      );
     }
 
     if (newPassword !== confirmNewPass) {

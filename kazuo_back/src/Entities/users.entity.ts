@@ -1,8 +1,15 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { v4 as uuid } from 'uuid';
 import { Product } from './product.entity';
 import { Store } from './store.entity';
+import { Company } from './company.entity';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -44,17 +51,6 @@ export class Users {
   })
   password: string;
 
-  @ApiProperty({
-    description: 'Nombre de la compañía del usuario',
-    example: 'Mi Empresa S.A.',
-  })
-  @Column({
-    type: 'varchar',
-    length: 100,
-    nullable: true,
-  })
-  company?: string;
-
   @ApiHideProperty()
   @Column({
     type: 'boolean',
@@ -69,7 +65,8 @@ export class Users {
     type: 'varchar',
     length: 255,
     nullable: true,
-    default: 'https://res.cloudinary.com/dytdzrpgq/image/upload/v1729872252/wulqmufihk7yojgrwwks.jpg'
+    default:
+      'https://res.cloudinary.com/dytdzrpgq/image/upload/v1729872252/wulqmufihk7yojgrwwks.jpg',
   })
   imgUrl?: string;
 
@@ -89,10 +86,14 @@ export class Users {
   pay: boolean;
 
   @OneToMany(() => Store, (store) => store.user)
-  @JoinColumn({name: 'store_Id'})
+  @JoinColumn({ name: 'store_Id' })
   stores: Store[];
 
-  @OneToMany(()=> Product, (products) => products.user)
-  @JoinColumn({name: 'product_id'})
-  products: Product[]
+  @OneToMany(() => Product, (products) => products.user)
+  @JoinColumn({ name: 'product_id' })
+  products: Product[];
+  companys: any;
+
+  @OneToMany(() => Company, (company) => company.user)
+  companies: Company[];
 }

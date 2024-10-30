@@ -18,7 +18,7 @@ import { Request } from 'express';
 @Controller('store')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
-  
+
   @Post('bodega')
   async create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
     return this.storeService.create(createStore, request);
@@ -35,10 +35,9 @@ export class StoreController {
   }
 
   @Get('AllStoresUser/:userId')
-async findAllStores(@Param('userId') userId: string) {
-  return this.storeService.findAllStores(userId);
-}
-
+  async findAllStores(@Param('userId') userId: string) {
+    return this.storeService.findAllStores(userId);
+  }
 
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -54,7 +53,7 @@ async findAllStores(@Param('userId') userId: string) {
   }
 
   @Delete(':id')
- async remove(@Param('id', ParseUUIDPipe) id: string) {
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.storeService.remove(id);
   }
 }

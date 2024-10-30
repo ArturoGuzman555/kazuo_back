@@ -1,4 +1,13 @@
-import { Controller, UploadedFile, UseGuards, UseInterceptors, Post, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import {
+  Controller,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+  Post,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+} from '@nestjs/common';
 import { FileUploadService } from './file-upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -31,7 +40,7 @@ export class FileUploadController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
-            maxSize: 2000000, 
+            maxSize: 2000000,
             message: 'La imagen excede el tamaño permitido',
           }),
           new FileTypeValidator({

@@ -7,7 +7,7 @@ export class StripeService {
 
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-09-30.acacia",
+      apiVersion: '2024-09-30.acacia',
     });
   }
 
@@ -16,9 +16,14 @@ export class StripeService {
       expand: ['data.product'],
     });
 
-    return prices.data.filter(
-      (price) => price.active && price.product && (price.product as Stripe.Product).active,
-    ).sort((a, b) => (a.unit_amount ?? 0) - (b.unit_amount ?? 0));
+    return prices.data
+      .filter(
+        (price) =>
+          price.active &&
+          price.product &&
+          (price.product as Stripe.Product).active,
+      )
+      .sort((a, b) => (a.unit_amount ?? 0) - (b.unit_amount ?? 0));
   }
 
   async createCheckoutSession(priceId: string) {

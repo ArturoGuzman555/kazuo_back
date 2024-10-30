@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,18 +23,18 @@ export class ProductService {
     private readonly storeRepository: StoreRepository,
     private readonly mailService: MailService,
   ) {}
-  
+
   async create(createProduct: CreateProductDto) {
     const store = await this.storeRepository.findById(createProduct.storeId);
-  
+
     if (!store) {
       throw new NotFoundException('Bodega no encontrada');
     }
-  
+
     const product = await this.productsRepository.findOne({
       where: { name: createProduct.name },
     });
-  
+
     if (product) {
       throw new ConflictException('El producto ya existe');
     }
@@ -42,14 +46,10 @@ export class ProductService {
       user: { id: createProduct.userId },
       store: { id: createProduct.storeId },
     });
-  
+
     await this.productsRepository.save(newProduct);
     return { message: 'El producto fue creado exitosamente', newProduct };
   }
-
-  
-
-  
 
   async findAll() {
     const all = await this.productsRepository.find({
@@ -80,52 +80,55 @@ export class ProductService {
       where: { id },
       relations: ['user'], // Carga el usuario relacionado
     });
-  
+
     if (!deleteProduct) throw new NotFoundException('Producto no encontrado');
-  
+
     // Asegúrate de que deleteProduct.user.email exista antes de enviar el correo
     if (deleteProduct.user && deleteProduct.user.email) {
       await this.mailService.sendMail(
         deleteProduct.user.email,
         'Producto eliminado',
-        `El producto con ID ${id} y nombre ${deleteProduct.name} fue eliminado`
+        `El producto con ID ${id} y nombre ${deleteProduct.name} fue eliminado`,
       );
     }
-  
+
     await this.productsRepository.remove(deleteProduct);
-  
+
     return {
       message: `El producto con el ID: ${id} fue eliminado exitosamente`,
     };
   }
-  
+
   async getProductsByStoreId(storeId: string): Promise<Product[]> {
     return await this.productsRepository.find({
       where: { store: { id: storeId } },
-      relations: ['store'], 
+      relations: ['store'],
     });
   }
 
   async bulkCreate(products: CreateProductDto[]) {
-    const createdProducts = await Promise.all(products.map(async (product) => {
-      const store = await this.storeRepository.findById(product.storeId);
-      if (!store) {
-        throw new NotFoundException(`Bodega con ID ${product.storeId} no encontrada`);
-      }
-  
-      const newProduct = this.productsRepository.create({
-        name: product.name,
-        quantity: product.quantity,
-        price: product.price,
-        minStock: product.minStock,
-        user: { id: product.userId },
-        store: { id: product.storeId },
-      });
-  
-      return await this.productsRepository.save(newProduct);
-    }));
-  
+    const createdProducts = await Promise.all(
+      products.map(async (product) => {
+        const store = await this.storeRepository.findById(product.storeId);
+        if (!store) {
+          throw new NotFoundException(
+            `Bodega con ID ${product.storeId} no encontrada`,
+          );
+        }
+
+        const newProduct = this.productsRepository.create({
+          name: product.name,
+          quantity: product.quantity,
+          price: product.price,
+          minStock: product.minStock,
+          user: { id: product.userId },
+          store: { id: product.storeId },
+        });
+
+        return await this.productsRepository.save(newProduct);
+      }),
+    );
+
     return createdProducts;
   }
 }
-  

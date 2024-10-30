@@ -11,6 +11,7 @@ import { SeedsModule } from './modules/seeds.module';
 import { PaymentModule } from './modules/stripe/payment.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     CategoryModule,
     FileUploadModule,
     WebsocketModule,
+    CompanyModule,
 
     // PaymentModule,
     SeedsModule,

@@ -24,20 +24,20 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     if (!email || !password) return 'Datos obligatorios';
-  
+
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) throw new BadRequestException('Credenciales inválidas');
-  
-    // Comparar la contraseña proporcionada con la contraseña almacenada
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new BadRequestException('Credenciales inválidas');
-  
+    if (!isPasswordValid)
+      throw new BadRequestException('Credenciales inválidas');
+
     const payload = {
       id: user.id,
       email: user.email,
       isAdmin: user.isAdmin,
     };
-  
+
     const token = this.jwtService.sign(payload);
     return {
       message: 'Usuario loggeado',
@@ -45,12 +45,9 @@ export class AuthService {
       email: user.email,
       name: user.name,
       id: user.id,
-      igmUrl: user.imgUrl
-    }
+      igmUrl: user.imgUrl,
+    };
   }
-  
-
-
 
   async signUp(user: Partial<Users>): Promise<Partial<Users>> {
     const { email, password } = user;
@@ -58,7 +55,6 @@ export class AuthService {
     if (foundUser) throw new BadRequestException('Email Registrado, ingresa');
 
     const hashedPass = await bcrypt.hash(password, 10);
-
 
     const createdUser = await this.userRepository.createUser({
       ...user,
@@ -101,20 +97,22 @@ export class AuthService {
     token: string,
     newPassword: string,
     confirmNewPass: string,
-): Promise<string> {
+  ): Promise<string> {
     if (newPassword !== confirmNewPass) {
-        throw new BadRequestException('Las contraseñas no coinciden');
+      throw new BadRequestException('Las contraseñas no coinciden');
     }
 
     if (newPassword.length < 8) {
-        throw new BadRequestException('La contraseña debe tener al menos 8 caracteres');
+      throw new BadRequestException(
+        'La contraseña debe tener al menos 8 caracteres',
+      );
     }
 
     const user = await this.userRepository.findOne({
-        where: {
-            resetPasswordToken: token,
-            resetPasswordExpires: MoreThan(new Date()),
-        },
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: MoreThan(new Date()),
+      },
     });
 
     if (!user) throw new BadRequestException('Token inválido o expirado');
@@ -122,13 +120,13 @@ export class AuthService {
     const hashedPass = await bcrypt.hash(newPassword, 10);
 
     await this.userRepository.update(user.id, {
-        password: hashedPass,
-        resetPasswordToken: null,
-        resetPasswordExpires: null,
+      password: hashedPass,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
     });
 
     return 'Contraseña actualizada correctamente';
-}
+  }
 
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
@@ -142,15 +140,13 @@ export class AuthService {
       user = await this.userRepository.createUser({
         email,
         name: profile.displayName,
- 
+
         password: '',
       });
     }
-  
 
     const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
     const token = this.jwtService.sign(payload);
     return { user, token };
   }
-  
 }

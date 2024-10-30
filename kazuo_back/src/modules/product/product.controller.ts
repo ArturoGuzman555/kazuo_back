@@ -31,7 +31,7 @@ export class ProductController {
   }
 
   @Post('bulk')
-  async bulkCreate(@Body() products: CreateProductDto[]){
+  async bulkCreate(@Body() products: CreateProductDto[]) {
     return this.productService.bulkCreate(products);
   }
 
@@ -65,7 +65,9 @@ export class ProductController {
   }
 
   @Get('store/:storeId')
-  async getProductsByStoreId(@Param('storeId') storeId: string): Promise<Product[]> {
+  async getProductsByStoreId(
+    @Param('storeId') storeId: string,
+  ): Promise<Product[]> {
     return await this.productService.getProductsByStoreId(storeId);
   }
 }

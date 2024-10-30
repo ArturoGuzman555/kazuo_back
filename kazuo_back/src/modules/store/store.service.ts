@@ -42,16 +42,18 @@ export class StoreService {
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
-      user: {id: createStore.userId},
+      user: { id: createStore.userId },
     });
 
     await this.storeRepository.save(newBodega);
-    return {message: 'La bodega fue creada exitosamente',newBodega};
+    return { message: 'La bodega fue creada exitosamente', newBodega };
   }
 
   async findAll() {
-     const hola = await this.storeRepository.find({relations:{category:true}});    
-     return hola.map(({ category, ...rest }) => ({
+    const hola = await this.storeRepository.find({
+      relations: { category: true },
+    });
+    return hola.map(({ category, ...rest }) => ({
       ...rest,
       categoryId: category.id,
     }));
@@ -64,16 +66,16 @@ export class StoreService {
     });
 
     if (!stores.length) {
-      throw new NotFoundException(`La bodega con  id ${userId} no fue encontrada`);
+      throw new NotFoundException(
+        `La bodega con  id ${userId} no fue encontrada`,
+      );
     }
 
     return stores.map(({ category, ...rest }) => ({
       ...rest,
       categoryId: category.id,
-    }));
-  }
-
-  
+    }));
+  }
 
   async findOne(id: string) {
     const storeFound = await this.storeRepository.findOne({
@@ -90,28 +92,28 @@ export class StoreService {
 
   async update(id: string, updateStore: UpdateStoreDto) {
     const storeFound = await this.storeRepository.findOne({ where: { id } });
-  
+
     if (!storeFound) {
       throw new NotFoundException('La bodega no fue encontrada');
     }
-  
+
     const category = await this.categoryRepository.findOne({
       where: { name: updateStore.categoryName },
     });
-  
+
     if (!category) {
       throw new NotFoundException('La categoría no existe');
     }
-  
+
     const newStore = { ...storeFound, ...updateStore, category: category };
-  
+
     await this.storeRepository.save(newStore);
-  
+
     return {
       message: 'Bodega modificada exitosamente',
       name: newStore.name,
       categoryId: newStore.category.id,
-    };
+    };
   }
 
   async remove(id: string) {
@@ -120,14 +122,16 @@ export class StoreService {
     if (!storeFound) {
       throw new NotFoundException('La bodega no existe');
     }
-    
+
     const products = await this.storeRepository.findOne({
       where: { id },
       relations: ['products'],
     });
-  
+
     if (products && products.products.length > 0) {
-      throw new ConflictException('No se puede eliminar la tienda porque contiene productos');
+      throw new ConflictException(
+        'No se puede eliminar la tienda porque contiene productos',
+      );
     }
 
     const deleteUser = await this.storeRepository.delete(storeFound);
