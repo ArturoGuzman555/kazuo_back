@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -22,10 +30,10 @@ export class AuthController {
   }
   @Post('/signin')
   async singIn(@Body() credentials: LoginUserDto) {
-    console.log(credentials)
+    console.log(credentials);
     const { email, password } = credentials;
 
-    console.log(email, password)
+    console.log(email, password);
     return this.authService.signIn(email, password);
   }
 
@@ -42,12 +50,11 @@ export class AuthController {
     return this.authService.requestPasswordReset(requestPasswordResetDto.email);
   }
   @Post('/reset-password')
-@UseGuards(ResetPasswordGuard)
-async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+  @UseGuards(ResetPasswordGuard)
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     const { token, newPassword, confirmNewPass } = resetPasswordDto;
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
-}
-
+  }
 
   @Post('encrypt-password')
   async encryptPassword(@Body() encryptPasswordDto: EncryptPasswordDto) {
@@ -69,5 +76,3 @@ async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     res.redirect(`http://frontend-url.com/callback?token=${token}`);
   }
 }
-
-

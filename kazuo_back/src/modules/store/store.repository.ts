@@ -8,14 +8,12 @@ import { Store } from '../../Entities/store.entity';
 export class StoreRepository {
   constructor(
     @InjectRepository(Store)
-    private readonly storeRepository: Repository<Store>, 
+    private readonly storeRepository: Repository<Store>,
   ) {}
-
 
   async findById(storeId: string): Promise<Store | undefined> {
     return this.storeRepository.findOne({ where: { id: storeId } });
   }
-  
 
   async findByName(name: string): Promise<Store | undefined> {
     return this.storeRepository.findOne({ where: { name } });

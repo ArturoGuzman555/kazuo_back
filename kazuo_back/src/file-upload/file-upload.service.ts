@@ -16,12 +16,11 @@ export class FileUploadService {
   async uploadProfileImage(userId: string, file: Express.Multer.File) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new NotFoundException('Usuario no encontrado');
-  
+
     const uploadedImage = await this.fileUploadRepository.uploadImage(file);
     await this.userRepository.update(userId, {
       imgUrl: uploadedImage.secure_url,
     });
     return { ...user, imgUrl: uploadedImage.secure_url };
   }
-  
 }

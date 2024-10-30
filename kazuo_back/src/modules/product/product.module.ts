@@ -11,7 +11,11 @@ import { MailModule } from 'src/mail/mail.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Category, Store]),MailModule, UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([Product, Category, Store]),
+    MailModule,
+    UsersModule,
+  ],
   controllers: [ProductController],
   providers: [ProductService, StoreRepository],
 })
