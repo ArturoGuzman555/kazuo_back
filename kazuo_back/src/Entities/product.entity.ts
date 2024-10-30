@@ -52,7 +52,4 @@ export class Product {
 
   @ManyToOne(() => Users, (user) => user.stores)
   user: Users;
-
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
 }
