@@ -39,12 +39,8 @@ export class ProductService {
       throw new ConflictException('El producto ya existe');
     }
     const newProduct = this.productsRepository.create({
-      name: createProduct.name,
-      quantity: createProduct.quantity,
-      price: createProduct.price,
-      minStock: createProduct.minStock,
-      user: { id: createProduct.userId },
-      store: { id: createProduct.storeId },
+      ...createProduct,
+      store: store,
     });
 
     await this.productsRepository.save(newProduct);
@@ -117,12 +113,9 @@ export class ProductService {
         }
 
         const newProduct = this.productsRepository.create({
-          name: product.name,
-          quantity: product.quantity,
-          price: product.price,
-          minStock: product.minStock,
-          user: { id: product.userId },
+          ...product,
           store: { id: product.storeId },
+          user: { id: product.userId },
         });
 
         return await this.productsRepository.save(newProduct);

@@ -23,7 +23,7 @@ import { CompanyModule } from './company/company.module';
     WebsocketModule,
     CompanyModule,
 
-    PaymentModule,
+    // PaymentModule,
     SeedsModule,
 
     ConfigModule.forRoot({

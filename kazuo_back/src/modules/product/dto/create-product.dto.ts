@@ -18,21 +18,49 @@ export class CreateProductDto {
   @IsNumber()
   quantity: number;
 
-  @ApiProperty({
-    description: 'Price of the product',
-    example: 59.99,
-  })
+  @IsNotEmpty()
+  @IsString()
+  unids: string;
+
   @IsNotEmpty()
   @IsNumber()
-  price: number;
+  maxCapacity: number;
 
-  @ApiProperty({
-    description: 'Minimum stock level before reordering',
-    example: 10,
-  })
+  @IsNotEmpty()
+  @IsNumber()
+  inPrice: number;
+
+  @IsNotEmpty()
+  @IsString()
+  bange: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  outPrice: number;
+
   @IsNotEmpty()
   @IsNumber()
   minStock: number;
+
+  // @ApiProperty({
+  //   description: 'Price of the product',
+  //   example: 59.99,
+  // })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // price: number;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // moneda: string;
+
+  // @ApiProperty({
+  //   description: 'Minimum stock level before reordering',
+  //   example: 10,
+  // })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // minStock: number;
 
   @ApiProperty({
     description: 'ID of the store to which the product belongs',
