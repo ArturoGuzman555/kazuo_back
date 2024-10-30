@@ -18,9 +18,6 @@ export class Category {
   @Column({ length: 50 })
   name: string;
 
-  @OneToMany(() => Product, (product) => product.category)
-  products: Product[];
-
   @OneToMany(() => Store, (store) => store.category)
   stores: Store[];
 }
