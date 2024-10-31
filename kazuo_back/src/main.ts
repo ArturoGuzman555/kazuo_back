@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CategoriesSeed } from './modules/category/categories.seed';
+import * as bodyParser from 'body-parser';
 
 require('dotenv').config();
 
@@ -36,6 +37,8 @@ async function bootstrap() {
 
   await app.listen(PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
+
+  app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 }
 bootstrap();
 

@@ -27,26 +27,17 @@ export class Product {
   @Column('numeric')
   maxCapacity: number;
 
-  @Column('numeric')
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   inPrice: number;
 
   @Column()
   bange: string;
 
-  @Column('numeric')
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   outPrice: number;
 
   @Column('numeric')
   minStock: number;
-
-  // @Column({ type: 'decimal', precision: 10, scale: 2 })
-  // price: number;
-
-  // @Column()
-  // moneda: string;
-
-  // @Column()
-  // minStock: number;
 
   @ManyToOne(() => Store, (store) => store.products)
   store: Store;
