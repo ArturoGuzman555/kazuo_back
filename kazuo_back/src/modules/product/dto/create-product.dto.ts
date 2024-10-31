@@ -18,26 +18,50 @@ export class CreateProductDto {
   @IsNumber()
   quantity: number;
 
+  @ApiProperty({
+    description: 'Unit of measurement for the product',
+    example: 'pcs',
+  })
   @IsNotEmpty()
   @IsString()
   unids: string;
 
+  @ApiProperty({
+    description: 'Maximum capacity for the product stock',
+    example: 500,
+  })
   @IsNotEmpty()
   @IsNumber()
   maxCapacity: number;
 
+  @ApiProperty({
+    description: 'Cost price of the product',
+    example: 25.5,
+  })
   @IsNotEmpty()
   @IsNumber()
   inPrice: number;
 
+  @ApiProperty({
+    description: 'Product badge or identifier',
+    example: 'WH-001',
+  })
   @IsNotEmpty()
   @IsString()
   bange: string;
 
+  @ApiProperty({
+    description: 'Selling price of the product',
+    example: 45.99,
+  })
   @IsNotEmpty()
   @IsNumber()
   outPrice: number;
 
+  @ApiProperty({
+    description: 'Minimum stock level before reordering',
+    example: 10,
+  })
   @IsNotEmpty()
   @IsNumber()
   minStock: number;

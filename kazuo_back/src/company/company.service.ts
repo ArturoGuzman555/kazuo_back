@@ -38,22 +38,22 @@ export class CompanyService {
       where: { id: companyId },
       relations: ['users'],
     });
-  
+
     if (!company) {
       throw new Error('Compañía no encontrada');
     }
 
     // Verifica si el usuario ya está en la compañía
-    if (!company.users.some(user => user.email === userEmail)) {
+    if (!company.users.some((user) => user.email === userEmail)) {
       const user = await this.usersService.getUserByEmail(userEmail); // Ahora usamos el servicio de usuarios
       if (user) {
         company.users.push(user); // Agrega el usuario completo
-      await this.companyRepository.save(company); // Guarda la compañía con el nuevo usuario
+        await this.companyRepository.save(company); // Guarda la compañía con el nuevo usuario
+      } else {
+        throw new NotFoundException('Usuario no encontrado');
+      }
     } else {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new ConflictException('El usuario ya está en la compañía');
     }
-  } else {
-    throw new ConflictException('El usuario ya está en la compañía');
   }
-}
 }

@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -9,6 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { Category } from './category.entity';
 import { Users } from './users.entity';
 import { Store } from './store.entity';
+import { Provider } from './providers.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -44,4 +46,7 @@ export class Product {
 
   @ManyToOne(() => Users, (user) => user.stores)
   user: Users;
+
+  @ManyToMany(() => Provider, (provider) => provider.products)
+  providers: Provider[];
 }
