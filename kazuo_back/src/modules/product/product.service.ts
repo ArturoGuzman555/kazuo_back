@@ -17,6 +17,9 @@ import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class ProductService {
+  findAllByStore(storeId: string) {
+      throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
