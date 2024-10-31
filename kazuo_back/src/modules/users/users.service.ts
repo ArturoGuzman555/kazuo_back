@@ -25,7 +25,7 @@ export class UsersService {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
     const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return userWithoutPassword as Users;
   }
 
   async createUser(createUserDto: CreateUserDto, user) {

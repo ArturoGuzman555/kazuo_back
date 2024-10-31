@@ -48,7 +48,7 @@ export class CreateCompanyDto {
   })
   @IsNotEmpty({ message: 'La industria es obligatoria' })
   @IsString()
-  indeustry: string;
+  industry: string;
 
   @ApiProperty({
     description: 'ID del usuario que creó la compañía',

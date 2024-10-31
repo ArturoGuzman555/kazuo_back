@@ -23,16 +23,22 @@ export class CompanyService {
 
     const user = await this.usersService.getUserById(userId);
     if (!user) {
-      throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+        throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
     }
 
-    const newCompany = await this.companyRepository.createCompany({
-      ...createCompanyDto,
-      createdAt: new Date(),
+    const newCompany = await this.companyRepository.create({
+        ...createCompanyDto,
+        createdAt: new Date(),
     });
+    
+    
+    newCompany.users = [user];
+    
+   
+    await this.companyRepository.save(newCompany);
 
     return newCompany;
-  }
+}
 
   async addUserToCompany(userEmail: string, companyId: string): Promise<void> {
     const company = await this.companyRepository.findOne({
@@ -44,12 +50,12 @@ export class CompanyService {
       throw new Error('Compañía no encontrada');
     }
 
-    // Verifica si el usuario ya está en la compañía
+    
     if (!company.users.some((user) => user.email === userEmail)) {
-      const user = await this.usersService.getUserByEmail(userEmail); // Ahora usamos el servicio de usuarios
+      const user = await this.usersService.getUserByEmail(userEmail);
       if (user) {
-        company.users.push(user); // Agrega el usuario completo
-        await this.companyRepository.save(company); // Guarda la compañía con el nuevo usuario
+        company.users.push(user); 
+        await this.companyRepository.save(company);
       } else {
         throw new NotFoundException('Usuario no encontrado');
       }
