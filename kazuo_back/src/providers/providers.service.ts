@@ -31,6 +31,7 @@ export class ProvidersService {
   
     const newProvider = this.providersRepository.create({
       ...createProviderDto,
+      createdAt: new Date(),
     });
   
     return await this.providersRepository.save(newProvider);

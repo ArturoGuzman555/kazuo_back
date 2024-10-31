@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToMany,
   ManyToOne,
@@ -40,6 +41,9 @@ export class Product {
 
   @Column('numeric')
   minStock: number;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
   @ManyToOne(() => Store, (store) => store.products)
   store: Store;

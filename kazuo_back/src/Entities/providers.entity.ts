@@ -5,6 +5,7 @@ import {
   ManyToMany,
   JoinTable,
   OneToOne,
+  CreateDateColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
 import { Users } from './users.entity';
@@ -25,6 +26,9 @@ export class Provider {
 
   @Column()
   phone: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
   @ManyToMany(() => Product, (product) => product.providers)
   @JoinTable({

@@ -28,6 +28,7 @@ export class CompanyService {
 
     const newCompany = await this.companyRepository.createCompany({
       ...createCompanyDto,
+      createdAt: new Date(),
     });
 
     return newCompany;
