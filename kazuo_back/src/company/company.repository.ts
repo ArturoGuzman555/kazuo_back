@@ -13,7 +13,10 @@ export class CompanyRepository extends Repository<Company> {
   }
 
   async addUserToCompany(userId: string, companyId: string): Promise<void> {
-    const company = await this.findOne({ where: { id: companyId }, relations: ['users'] });
+    const company = await this.findOne({
+      where: { id: companyId },
+      relations: ['users'],
+    });
     if (!company) {
       throw new Error('Compañía no encontrada');
     }
@@ -21,7 +24,7 @@ export class CompanyRepository extends Repository<Company> {
     if (!company.users) {
       company.users = [];
     }
-    if (!company.users.some(user => user.id === userId)) {
+    if (!company.users.some((user) => user.id === userId)) {
       company.users.push({ id: userId } as any);
       await this.save(company);
     } else {

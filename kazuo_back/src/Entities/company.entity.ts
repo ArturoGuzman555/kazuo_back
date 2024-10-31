@@ -28,7 +28,18 @@ export class Company {
     length: 100,
     nullable: true,
   })
-  name: string;
+  CompanyName: string;
+
+  @ApiProperty({
+    description: 'País i Región',
+    example: 'Argentina',
+  })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
+  country: string;
 
   @ApiProperty({
     description: 'Dirección de la compañía',
@@ -42,6 +53,15 @@ export class Company {
   address: string;
 
   @ApiProperty({
+    description: 'Telefono de contacto',
+    example: '5551678033',
+  })
+  @Column({
+    type: 'bigint'
+  })
+  contactPhone: Number;
+
+  @ApiProperty({
     description: 'Correo electrónico de la compañía',
     example: 'info@miempresa.com',
   })
@@ -53,8 +73,19 @@ export class Company {
   })
   email: string;
 
+  @ApiProperty({
+    description: 'Tipo de industria',
+    example: 'Abarrotes',
+  })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  indeustry: string;
+
   @ManyToMany(() => Users, (user) => user.companies)
-  @JoinTable({ 
+  @JoinTable({
     name: 'user_company',
     joinColumn: {
       name: 'company_id',
@@ -65,5 +96,5 @@ export class Company {
       referencedColumnName: 'id',
     },
   })
-  users: Users[]; 
+  users: Users[];
 }

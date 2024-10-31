@@ -41,7 +41,3 @@ async function bootstrap() {
   app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 }
 bootstrap();
-
-
-
-
