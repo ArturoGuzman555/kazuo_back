@@ -12,12 +12,8 @@ import { SeedsModule } from './modules/seeds.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { CompanyModule } from './company/company.module';
-<<<<<<< HEAD
 import { ProvidersModule } from './providers/providers.module';
-=======
-import { InformesModule } from './modules/informes/informes.module';
 import { StripeModule } from './modules/stripe/payment.module';
->>>>>>> origin
 
 @Module({
   imports: [
@@ -28,11 +24,7 @@ import { StripeModule } from './modules/stripe/payment.module';
     FileUploadModule,
     WebsocketModule,
     CompanyModule,
-<<<<<<< HEAD
     ProvidersModule,
-=======
-    InformesModule,
->>>>>>> origin
 
     StripeModule,
     SeedsModule,

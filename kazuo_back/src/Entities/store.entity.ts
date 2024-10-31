@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -16,6 +17,9 @@ export class Store {
 
   @Column({ length: 50 })
   name: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
   @ManyToOne(() => Category, (category) => category.stores)
   category: Category;

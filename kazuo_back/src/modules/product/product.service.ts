@@ -41,6 +41,7 @@ export class ProductService {
     const newProduct = this.productsRepository.create({
       ...createProduct,
       store: store,
+      createdAt: new Date(),
     });
 
     await this.productsRepository.save(newProduct);
