@@ -21,6 +21,7 @@ export class Product {
   @Column('numeric')
   quantity: number;
 
+  @Column()
   unids: string;
 
   @Column('numeric')
