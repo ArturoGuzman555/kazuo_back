@@ -23,7 +23,6 @@ export class ProvidersService {
   async create(createProviderDto: CreateProviderDto): Promise<Provider> {
     const { userId } = createProviderDto;
   
-    // Verifica si el usuario existe usando el servicio de usuarios
     const user = await this.usersService.getUserById(userId);
     if (!user) {
       throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
@@ -33,6 +32,8 @@ export class ProvidersService {
       ...createProviderDto,
       createdAt: new Date(),
     });
+
+    newProvider.users=[user]
   
     return await this.providersRepository.save(newProvider);
   }
