@@ -25,7 +25,9 @@ export class FileUploadService {
     }
 
     // Actualizar la URL de la imagen en el perfil del usuario
-    await this.userRepository.update(userId, { imgUrl: uploadedImage.secure_url });
+    await this.userRepository.update(userId, {
+      imgUrl: uploadedImage.secure_url,
+    });
 
     // Retornar el usuario con la URL actualizada (opcional: evita campos sensibles)
     return {

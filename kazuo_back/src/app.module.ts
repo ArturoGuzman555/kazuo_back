@@ -12,6 +12,7 @@ import { PaymentModule } from './modules/stripe/payment.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { CompanyModule } from './company/company.module';
+import { ProvidersModule } from './providers/providers.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CompanyModule } from './company/company.module';
     FileUploadModule,
     WebsocketModule,
     CompanyModule,
+    ProvidersModule,
 
     // PaymentModule,
     SeedsModule,

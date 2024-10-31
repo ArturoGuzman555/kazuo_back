@@ -4,6 +4,7 @@ import {
   JoinColumn,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
@@ -11,6 +12,7 @@ import { v4 as uuid } from 'uuid';
 import { Product } from './product.entity';
 import { Store } from './store.entity';
 import { Company } from './company.entity';
+import { Provider } from './providers.entity';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -96,5 +98,7 @@ export class Users {
   companys: any;
 
   @ManyToMany(() => Company, (company) => company.users)
-  companies: Company[]; 
+  companies: Company[];
+  @ManyToMany(() => Provider, (provider) => provider.users)
+providers: Provider[]
 }
