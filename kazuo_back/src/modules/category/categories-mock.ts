@@ -1,10 +1,10 @@
 export const categoriesMock: string[] = [
-  'teléfono inteligente',
-  'ordenadores portátiles',
+  'Smartphones',
+  'Laptops',
   'tablets',
-  'auriculares',
-  'cámaras',
-  'impresoras',
-  'monitores',
-  'accesorios',
+  'Ropa',
+  'Zapatos',
+  'Perifericos',
+  'Electrodomesticos',
+  'Accesorios',
 ];
