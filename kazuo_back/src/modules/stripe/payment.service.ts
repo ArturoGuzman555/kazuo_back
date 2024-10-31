@@ -38,7 +38,6 @@
 //   }
 // }
 
-
 // stripe.service.ts
 import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
@@ -48,7 +47,9 @@ export class StripeService {
   private stripe: Stripe;
 
   constructor() {
-    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-09-30.acacia', });
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2024-09-30.acacia',
+    });
   }
 
   async createCheckoutSession(priceId: string) {
@@ -56,12 +57,16 @@ export class StripeService {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_API_URL}/GestionInventario`,
-      cancel_url: `${process.env.NEXT_PUBLIC_API_URL}/Planes`,
+      success_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/GestionInventario',
+      cancel_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/Planes',
     });
   }
 
   constructEvent(payload: Buffer, signature: string) {
-    return this.stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET!);
+    return this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!,
+    );
   }
 }
