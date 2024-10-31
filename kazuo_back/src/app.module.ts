@@ -8,11 +8,16 @@ import { ProductModule } from './modules/product/product.module';
 import { UsersModule } from './modules/users/users.module';
 import { CategoryModule } from './modules/category/category.module';
 import { SeedsModule } from './modules/seeds.module';
-import { PaymentModule } from './modules/stripe/payment.module';
+// import { PaymentModule, StripeModule } from './modules/stripe/payment.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { CompanyModule } from './company/company.module';
+<<<<<<< HEAD
 import { ProvidersModule } from './providers/providers.module';
+=======
+import { InformesModule } from './modules/informes/informes.module';
+import { StripeModule } from './modules/stripe/payment.module';
+>>>>>>> origin
 
 @Module({
   imports: [
@@ -23,9 +28,13 @@ import { ProvidersModule } from './providers/providers.module';
     FileUploadModule,
     WebsocketModule,
     CompanyModule,
+<<<<<<< HEAD
     ProvidersModule,
+=======
+    InformesModule,
+>>>>>>> origin
 
-    // PaymentModule,
+    StripeModule,
     SeedsModule,
 
     ConfigModule.forRoot({
