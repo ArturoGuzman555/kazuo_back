@@ -33,8 +33,15 @@ export class UsersService {
     if (existingUser) {
       throw new ConflictException('El correo electrónico ya está registrado');
     }
-    const newUser = await this.userRepository.createUser(user);
-    const { password, ...userWithoutPassword } = newUser;
+    const newUser = {
+      ...user,
+      createdAt: new Date(),  
+    };
+  
+    const savedUser = await this.userRepository.createUser(newUser);
+    const { password, ...userWithoutPassword } = savedUser;
+  
+    return userWithoutPassword; 
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {

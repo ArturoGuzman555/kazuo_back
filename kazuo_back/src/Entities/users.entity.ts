@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToMany,
@@ -87,6 +88,9 @@ export class Users {
     default: false,
   })
   pay: boolean;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
   @OneToMany(() => Store, (store) => store.user)
   @JoinColumn({ name: 'store_Id' })

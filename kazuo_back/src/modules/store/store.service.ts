@@ -43,6 +43,7 @@ export class StoreService {
       name: createStore.name,
       category: category,
       user: { id: createStore.userId },
+      createdAt: new Date(),
     });
 
     await this.storeRepository.save(newBodega);

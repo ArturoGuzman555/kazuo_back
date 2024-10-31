@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -82,7 +83,10 @@ export class Company {
     length: 50,
     nullable: false,
   })
-  indeustry: string;
+  industry: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
   @ManyToMany(() => Users, (user) => user.companies)
   @JoinTable({
