@@ -8,8 +8,9 @@ import * as bodyParser from 'body-parser';
 require('dotenv').config();
 
 async function bootstrap() {
+  console.log('Current working directory:', process.cwd());
   const app = await NestFactory.create(AppModule);
-  app.use(bodyParser.raw({ type: 'application/json' }));
+  //app.use(bodyParser.raw({ type: 'application/json' }));
 
   app.enableCors({
     origin: 'http://localhost:3000',
@@ -43,3 +44,6 @@ async function bootstrap() {
   app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 }
 bootstrap();
+
+
+
