@@ -13,10 +13,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { CompanyModule } from './company/company.module';
 import { ProvidersModule } from './providers/providers.module';
-<<<<<<< HEAD
 import { InformesModule } from './modules/informes/informes.module';
-=======
->>>>>>> 93ee10f3db839ed2cc53683c31b80ef0eb068856
 import { StripeModule } from './modules/stripe/payment.module';
 
 @Module({
@@ -29,10 +26,7 @@ import { StripeModule } from './modules/stripe/payment.module';
     WebsocketModule,
     CompanyModule,
     ProvidersModule,
-<<<<<<< HEAD
     InformesModule,
-=======
->>>>>>> 93ee10f3db839ed2cc53683c31b80ef0eb068856
 
     StripeModule,
     SeedsModule,
