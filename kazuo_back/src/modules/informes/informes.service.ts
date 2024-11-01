@@ -24,14 +24,14 @@ export class InformesService {
       pdf.fontSize(18).text('Cantidad Minima', 850, 150);
 
       informe.datos.forEach((dato, index) => {
-        pdf.fontSize(18).text(dato.nombre, 100, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.cantidad, 250, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.unidadDeMedida, 350, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.capacidadDeAlmacenamiento, 450, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.precioDeCompra, 550, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.monedaDeUso, 650, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.precioDeVenta, 750, 200 + (index * 50));
-        pdf.fontSize(18).text(dato.cantidadMinima, 850, 200 + (index * 50));
+        pdf.fontSize(16).text(dato.nombre, 100, 200 + index * 50);
+        pdf.fontSize(16).text(dato.cantidad, 250, 200 + index * 50);
+        pdf.fontSize(16).text(dato.unidadDeMedida, 350, 200 + index * 50);
+        pdf.fontSize(16).text(dato.capacidadDeAlmacenamiento, 450, 200 + index * 50);
+        pdf.fontSize(16).text(dato.precioDeCompra, 550, 200 + index * 50);
+        pdf.fontSize(16).text(dato.monedaDeUso, 650, 200 + index * 50);
+        pdf.fontSize(16).text(dato.precioDeVenta, 750, 200 + index * 50);
+        pdf.fontSize(16).text(dato.cantidadMinima, 850, 200 + index * 50);
       });
 
       pdf.end();
