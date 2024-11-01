@@ -10,9 +10,10 @@ import { UserRepository } from 'src/modules/users/users.repository';
 import { UsersService } from 'src/modules/users/users.service';
 import { UsersModule } from 'src/modules/users/users.module';
 import { ProvidersRepository } from './providers.repository';
+import { ProductModule } from 'src/modules/product/product.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Provider, Product]),UsersModule],
+  imports: [TypeOrmModule.forFeature([Provider, Product]),UsersModule, ProductModule],
   controllers: [ProvidersController],
   providers: [ProvidersService, UsersService, ProvidersRepository],
   exports: [ProvidersService],

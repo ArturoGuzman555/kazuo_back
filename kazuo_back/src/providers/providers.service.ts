@@ -57,6 +57,7 @@ export class ProvidersService {
       throw new NotFoundException(`Producto con nombre ${productName} no encontrado`);
     }
 
+    // Revisa si el producto ya está en la lista de productos del proveedor
     if (!provider.products.some((p) => p.id === product.id)) {
       provider.products.push(product);
       await this.providersRepository.save(provider);

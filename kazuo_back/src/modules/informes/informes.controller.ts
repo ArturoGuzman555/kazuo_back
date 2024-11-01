@@ -9,6 +9,6 @@ export class InformesController {
   async generarInforme(@Body() informe: any) {
     const pdf = await this.informesService.generarPdf(informe);
     await this.informesService.enviarCorreoElectronico(pdf);
-    return { message: 'Informe generado y enviado con éxito' };
-  }
+    return { message: 'Informe generado y enviado con éxito' };
+  }
 }
