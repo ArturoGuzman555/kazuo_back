@@ -88,17 +88,11 @@ export class Company {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @ManyToMany(() => Users, (user) => user.companies)
-  @JoinTable({
-    name: 'user_company',
-    joinColumn: {
-      name: 'company_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-  })
-  users: Users[];
+  @ManyToMany(() => Users, (user) => user.companies, { onDelete: 'CASCADE' })
+@JoinTable({
+  name: 'user_company',
+  joinColumn: { name: 'company_id', referencedColumnName: 'id' },
+  inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+})
+users: Users[];
 }
