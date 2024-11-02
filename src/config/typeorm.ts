@@ -16,7 +16,8 @@ if(process.env.NODE_ENV === 'production')
       logging: false,
       synchronize: true,
       ssl: {
-        rejectUnauthorized: false}
+        rejectUnauthorized: false,
+      },
     };
   }
   
