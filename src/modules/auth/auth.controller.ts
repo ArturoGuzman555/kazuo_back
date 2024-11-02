@@ -56,23 +56,5 @@ export class AuthController {
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
 
-  @Post('encrypt-password')
-  async encryptPassword(@Body() encryptPasswordDto: EncryptPasswordDto) {
-    const { password } = encryptPasswordDto;
-    const encryptedPassword = await this.authService.hashPassword(password);
-    return { encryptedPassword };
-  }
-
-  @Get('auth0')
-  @UseGuards(AuthGuard('auth0'))
-  async auth0Login() {
-    // Esta ruta redirige a Auth0 para autenticación.
-  }
-
-  @Get('auth0-callback')
-  @UseGuards(AuthGuard('auth0'))
-  async auth0Callback(@Req() req, @Res() res) {
-    const { user, token } = await this.authService.auth0Login(req.user);
-    res.redirect(`http://frontend-url.com/callback?token=${token}`);
-  }
+ 
 }
