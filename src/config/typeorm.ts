@@ -6,20 +6,18 @@ configDotenv({ path: '.development.env'});
 console.log(process.env.NODE_ENV)
 let config = {}
 if(process.env.NODE_ENV === 'production')
-  {
+  {console.log("produccion")
     config = {
       type: 'postgres',
-      database:process.env.DB_NAME,
-      host: process.env.PROD_DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
+      url: process.env.DB_URL,
       entities: ['dist/**/*.entity{.ts,.js}'],
       migrations: ['dist/migrations/*{.ts,.js}'],
       autoLoadEntities: true,
       logging: false,
       synchronize: true,
-      dropSchema: false,
+      ssl: {
+        rejectUnauthorized: false, // Permite conexiones SSL sin verificar el certificado
+      },
     };
   }
   
