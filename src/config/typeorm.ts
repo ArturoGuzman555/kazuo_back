@@ -37,6 +37,6 @@ config = {
   synchronize: true,
   dropSchema: false,
 }
-}
+};
 console.log('Current working directory:', process.cwd());
 export default registerAs('typeorm', () => config);
