@@ -9,14 +9,18 @@ if(process.env.NODE_ENV === 'production')
   {console.log("produccion")
     config = {
       type: 'postgres',
-      url: process.env.DB_URL,
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: ['dist/**/*.entity{.ts,.js}'],
       migrations: ['dist/migrations/*{.ts,.js}'],
       autoLoadEntities: true,
       logging: false,
       synchronize: true,
       ssl: {
-        rejectUnauthorized: false, // Permite conexiones SSL sin verificar el certificado
+        rejectUnauthorized: false,
       },
     };
   }

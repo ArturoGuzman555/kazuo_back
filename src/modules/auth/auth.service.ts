@@ -133,20 +133,4 @@ export class AuthService {
     return bcrypt.hash(password, salt);
   }
 
-  async auth0Login(profile: any) {
-    const email = profile.emails[0].value;
-    let user = await this.userRepository.getUserByEmail(email);
-    if (!user) {
-      user = await this.userRepository.createUser({
-        email,
-        name: profile.displayName,
-
-        password: '',
-      });
-    }
-
-    const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
-    const token = this.jwtService.sign(payload);
-    return { user, token };
-  }
 }
