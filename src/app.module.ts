@@ -26,7 +26,7 @@ import { StripeModule } from './modules/stripe/payment.module';
     CompanyModule,
     ProvidersModule,
 
-    StripeModule,
+    //StripeModule,
     SeedsModule,
 
     ConfigModule.forRoot({
