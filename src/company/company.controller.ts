@@ -37,8 +37,6 @@ export class CompanyController {
   }
 
   @Post()
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin)
   @ApiResponse({ status: 201, description: 'Compañía creada exitosamente.' })
   @ApiResponse({
     status: 409,
