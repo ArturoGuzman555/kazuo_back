@@ -25,8 +25,7 @@ export class AuthGuard implements CanActivate {
 
       payload.exp = new Date(payload.exp * 1000);
       payload.iat = new Date(payload.iat * 1000);
-      (payload.roles = payload.isAdmin ? [Role.Admin] : [Role.User]),
-        [Role.SuperAdmin];
+      payload.roles = payload.isAdmin ? [Role.Admin] : [Role.User];
       request.user = payload;
 
       request.user = {
@@ -45,7 +44,7 @@ export class AuthGuard implements CanActivate {
         const userIdToModify = request.params.id;
 
         if (
-          request.user.roles.includes(Role) ||
+          request.user.roles.includes(Role.Admin) ||
           request.user.userId === userIdToModify
         ) {
           return true;
