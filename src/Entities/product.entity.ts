@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -53,4 +54,9 @@ export class Product {
 
   @ManyToMany(() => Provider, (provider) => provider.products)
   providers: Provider[];
+
+  @ManyToOne(() => Category, (category) => category.products)
+  @JoinColumn({ name: 'categoryId' }) 
+  category: Category;
+
 }

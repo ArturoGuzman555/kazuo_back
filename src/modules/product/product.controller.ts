@@ -11,63 +11,92 @@ import {
   ParseUUIDPipe,
   UseGuards,
   Req,
+  Patch,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Product } from 'src/Entities/product.entity';
 import { Request } from 'express';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from 'src/decorators/roles.decorators';
+import { Role } from 'src/decorators/roles.enum';
 
+@ApiTags('products')
+@ApiBearerAuth() 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiBody({ type: UpdateProductDto })
+  @ApiResponse({ status: 201, description: 'Product created successfully.' })
   async create(@Body() createProduct: CreateProductDto) {
-    const product = await this.productService.create(createProduct); // Solo el argumento necesario
-    return product;
+    return await this.productService.create(createProduct);
   }
 
   @Post('bulk')
+  @ApiOperation({ summary: 'Bulk create products' })
+  @ApiBody({ type: [CreateProductDto] })
+  @ApiResponse({ status: 201, description: 'Products created successfully.' })
   async bulkCreate(@Body() products: CreateProductDto[]) {
-    return this.productService.bulkCreate(products);
+    return await this.productService.bulkCreate(products);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.productService.findAll();
+  @ApiOperation({ summary: 'Get all products' })
+  @ApiResponse({ status: 200, description: 'List of products.' })
+  async findAll() {
+    return await this.productService.findAll();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productService.findOne(id);
+  @ApiOperation({ summary: 'Get a product by ID' })
+  @ApiParam({ name: 'id', required: true, description: 'ID of the product' })
+  @ApiResponse({ status: 200, description: 'Product found.' })
+  @ApiResponse({ status: 404, description: 'Product not found.' })
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.productService.findOne(id);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Put(':id')
-  @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
-  update(
+  @ApiOperation({ summary: 'Update a product by ID' })
+  @ApiParam({ name: 'id', required: true, description: 'ID of the product to update' })
+  @ApiBody({ type: UpdateProductDto })
+  @ApiResponse({ status: 200, description: 'Product updated successfully.' })
+  @ApiResponse({ status: 404, description: 'Product not found.' })
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProduct: UpdateProductDto,
   ) {
-    return this.productService.update(id, updateProduct);
+    return await this.productService.update(id, updateProduct);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Delete(':id')
-  //@UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productService.remove(id);
+  @ApiOperation({ summary: 'Delete a product by ID' })
+  @ApiParam({ name: 'id', required: true, description: 'ID of the product to delete' })
+  @ApiResponse({ status: 200, description: 'Product deleted successfully.' })
+  @ApiResponse({ status: 404, description: 'Product not found.' })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.productService.remove(id);
   }
 
   @Get('store/:storeId')
-  async getProductsByStoreId(
-    @Param('storeId') storeId: string,
-  ): Promise<Product[]> {
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get products by store ID' })
+  @ApiParam({ name: 'storeId', required: true, description: 'ID of the store' })
+  @ApiResponse({ status: 200, description: 'List of products from the store.' })
+  async getProductsByStoreId(@Param('storeId', ParseUUIDPipe) storeId: string): Promise<Product[]> {
     return await this.productService.getProductsByStoreId(storeId);
   }
 }
