@@ -54,15 +54,15 @@ export class UpdateProductDto {
       example: 'WH-001',
       required: false,
     })
-    @IsOptional()
-    @IsString()
-    bange?: string;
+    // @IsOptional()
+    // @IsString()
+    // bange?: string;
   
-    @ApiProperty({
-      description: 'Selling price of the product',
-      example: 45.99,
-      required: false,
-    })
+    // @ApiProperty({
+    //   description: 'Selling price of the product',
+    //   example: 45.99,
+    //   required: false,
+    // })
     @IsOptional()
     @IsNumber()
     outPrice?: number;

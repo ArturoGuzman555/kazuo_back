@@ -7,7 +7,7 @@ export class StripeService {
 
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-09-30.acacia',
+      apiVersion: '2024-10-28.acacia',
     });
   }
 
@@ -16,8 +16,8 @@ export class StripeService {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.FRONTEND_URL}/GestionInventario`,
-      cancel_url: `${process.env.FRONTEND_URL}/Planes`,
+      success_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/GestionInventario',
+      cancel_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/Planes',
     });
   }
 
