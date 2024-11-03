@@ -37,6 +37,8 @@ export class CompanyController {
   }
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiResponse({ status: 201, description: 'Compañía creada exitosamente.' })
   @ApiResponse({
     status: 409,
@@ -47,8 +49,8 @@ export class CompanyController {
   }
 
   @Post(':companyId/users')
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  //@UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Agregar un usuario a una compañía' })
   @ApiResponse({ status: 200, description: 'Usuario agregado a la compañía.' })
   @ApiResponse({

@@ -46,6 +46,8 @@ export class ProvidersController {
   }
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Crear un nuevo proveedor' })
   @ApiResponse({ status: 201, description: 'Proveedor creado exitosamente', type: Provider })
   @ApiResponse({ status: 400, description: 'Error en los datos de entrada' })
@@ -54,6 +56,8 @@ export class ProvidersController {
   }
 
   @Post(':providerId/add-product')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Add a product to a provider' })
   @ApiParam({ name: 'providerId', description: 'ID of the provider' })
   @ApiResponse({
