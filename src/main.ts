@@ -4,17 +4,24 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CategoriesSeed } from './modules/category/categories.seed';
 import * as bodyParser from 'body-parser';
+import * as express from 'express';
+
 
 require('dotenv').config();
 
 async function bootstrap() {
   console.log('Current working directory:', process.cwd());
   const app = await NestFactory.create(AppModule);
+<<<<<<< HEAD
 <<<<<<< HEAD:src/main.ts
   //app.use(bodyParser.raw({ type: 'application/json' }));
 =======
   // app.use(bodyParser.raw({ type: 'application/json' }));
 >>>>>>> aec6877a5307a6ec76a5137b38134bf76f8597a9:kazuo_back/src/main.ts
+=======
+  app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
+
+>>>>>>> f62050cd9197182d4dc044a70cb80b4b23c36564
 
   app.enableCors({
     origin: '*',
