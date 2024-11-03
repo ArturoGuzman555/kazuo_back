@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'production') {
     migrations: ['dist/migrations/*{.ts,.js}'],
     logging: false,
     synchronize: true,
-    dropSchema: true,
+    dropSchema: false,
   };
 }
 
