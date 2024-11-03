@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
@@ -16,12 +17,16 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { Request } from 'express';
 import { Role } from 'src/decorators/roles.enum';
 import { Roles } from 'src/decorators/roles.decorators';
+import { AuthGuard } from '../auth/guards/auth-guard.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+
 
 @Controller('store')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
   @Post('bodega')
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
     return this.storeService.create(createStore, request);

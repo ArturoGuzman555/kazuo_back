@@ -159,7 +159,17 @@ export class UpdateUserDto {
   @ApiHideProperty()
   @IsEmpty()
   isAdmin?: boolean = false;
+
+  /**
+   * Propiedad oculta
+   */
+  @ApiHideProperty()
+  @IsEmpty()
+  isSuperAdmin?: boolean = false;
+
 }
+
+
 export class ResetPasswordDto {
   @ApiProperty({
     description: 'Token de restablecimiento de contraseña',

@@ -6,6 +6,7 @@ import {
   Param,
   NotFoundException,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CompanyService } from './company.service';
@@ -14,11 +15,30 @@ import { Roles } from 'src/decorators/roles.decorators';
 import { Role } from 'src/decorators/roles.enum';
 import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
+import { Company } from 'src/Entities/company.entity';
 
 @ApiTags('companies')
 @Controller('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
+
+  @ApiOperation({ summary: 'Obtener todas las compañías' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de todas las compañías',
+    type: Company,
+    isArray: true,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Error interno del servidor',
+  })
+  @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.SuperAdmin)
+  async getAllCompanies(): Promise<Company[]> {
+    return this.companyService.getAllCompanies();
+  }
 
   @Post()
   @ApiResponse({ status: 201, description: 'Compañía creada exitosamente.' })
@@ -31,8 +51,8 @@ export class CompanyController {
   }
 
   @Post(':companyId/users')
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  //@UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Agregar un usuario a una compañía' })
   @ApiResponse({ status: 200, description: 'Usuario agregado a la compañía.' })
   @ApiResponse({

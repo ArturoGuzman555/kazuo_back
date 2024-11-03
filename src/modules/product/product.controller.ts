@@ -19,6 +19,10 @@ import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Product } from 'src/Entities/product.entity';
 import { Request } from 'express';
+import { ApiResponse } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/roles.decorators';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Role } from 'src/decorators/roles.enum';
 
 @Controller('product')
 export class ProductController {
@@ -36,8 +40,12 @@ export class ProductController {
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.SuperAdmin)
   @HttpCode(HttpStatus.OK)
-  findAll() {
+  @ApiResponse({ status: 200, description: 'Products retrieved successfully', type: [Product] })
+  @ApiResponse({ status: 404, description: 'Products not found' })
+  async getAllProducts(): Promise<Product[]> {
     return this.productService.findAll();
   }
 
@@ -48,7 +56,8 @@ export class ProductController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -58,7 +67,8 @@ export class ProductController {
   }
 
   @Delete(':id')
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productService.remove(id);

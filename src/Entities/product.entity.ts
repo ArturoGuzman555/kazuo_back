@@ -53,4 +53,7 @@ export class Product {
 
   @ManyToMany(() => Provider, (provider) => provider.products)
   providers: Provider[];
+
+  @ManyToOne(() => Category, (category) => category.products)
+category: Category;
 }
