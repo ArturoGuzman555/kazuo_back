@@ -12,6 +12,15 @@ export class ProvidersRepository extends Repository<Provider> {
     super(Provider, dataSource.createEntityManager());
   }
 
+  async findAllWithRelations(page: number, limit: number): Promise<Provider[]> {
+    return this.createQueryBuilder('provider')
+      .leftJoinAndSelect('provider.products', 'products') // Incluye productos relacionados
+      .leftJoinAndSelect('provider.users', 'users')     // Incluye usuarios relacionados
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+  }
+
   async createProvider(provider: Partial<Provider>): Promise<Provider> {
     return this.save(provider);
   }
@@ -26,7 +35,6 @@ export class ProvidersRepository extends Repository<Provider> {
       throw new NotFoundException('Proveedor no encontrado');
     }
 
-    // Asegura que el proveedor tenga una lista de productos
     if (!provider.products) {
       provider.products = [];
     }

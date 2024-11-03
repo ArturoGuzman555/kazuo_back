@@ -6,8 +6,10 @@ import {
   Param,
   NotFoundException,
   UseGuards,
+  Get,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CompanyService } from './company.service';
 import { AddUserToCompanyDto, CreateCompanyDto } from './company.dto';
 import { Roles } from 'src/decorators/roles.decorators';
@@ -19,6 +21,20 @@ import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 @Controller('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
+
+  @Get()
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @Roles(Role.SuperAdmin) // Ajusta según tu lógica de roles
+  @UseGuards(AuthGuard, RolesGuard) // Ajusta el tipo de guardia según tu implementación
+  async getCompanies(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10, // Cambié el valor predeterminado a 10 para más resultados
+  ) {
+    page = Math.max(1, page);
+    limit = Math.max(1, limit);
+    return this.companyService.getCompanies(page, limit);
+  }
 
   @Post()
   @ApiResponse({ status: 201, description: 'Compañía creada exitosamente.' })

@@ -43,6 +43,8 @@ export class ProductController {
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.SuperAdmin)
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.productService.findAll();

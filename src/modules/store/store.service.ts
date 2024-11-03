@@ -10,6 +10,7 @@ import { Store } from 'src/Entities/store.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
 import { Users } from 'src/Entities/users.entity';
+import { StoreRepository } from './store.repository';
 
 @Injectable()
 export class StoreService {
@@ -19,6 +20,7 @@ export class StoreService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
   ) {}
+
 
   async create(createStore: CreateStoreDto, request: any) {
     const user: Users = request.user;

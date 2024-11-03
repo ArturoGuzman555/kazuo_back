@@ -8,6 +8,14 @@ export class CompanyRepository extends Repository<Company> {
     super(Company, dataSource.createEntityManager());
   }
 
+  async findAllWithRelations(page: number, limit: number): Promise<Company[]> {
+    return this.createQueryBuilder('company')
+      .leftJoinAndSelect('company.users', 'users') // Incluye usuarios relacionados
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+  }
+
   async createCompany(company: Partial<Company>): Promise<Company> {
     return this.save(company);
   }

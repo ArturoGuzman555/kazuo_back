@@ -18,6 +18,10 @@ export class CompanyService {
     private readonly usersService: UsersService,
   ) {}
 
+  async getCompanies(page: number, limit: number): Promise<Company[]> {
+    return this.companyRepository.findAllWithRelations(page, limit);
+  }
+
   async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { userId } = createCompanyDto;
 

@@ -20,6 +20,10 @@ export class ProvidersService {
     private readonly usersService: UsersService,
   ) {}
 
+  async getProviders(page: number, limit: number): Promise<Provider[]> {
+    return this.providersRepository.findAllWithRelations(page, limit);
+  }
+
   async create(createProviderDto: CreateProviderDto): Promise<Provider> {
     const { userId } = createProviderDto;
   
