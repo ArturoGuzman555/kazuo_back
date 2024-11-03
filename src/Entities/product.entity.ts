@@ -1,17 +1,16 @@
 import {
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
   Entity,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
-import { Category } from './category.entity';
-import { Users } from './users.entity';
 import { Store } from './store.entity';
+import { Users } from './users.entity';
 import { Provider } from './providers.entity';
+import { Category } from './category.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -45,6 +44,9 @@ export class Product {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
+
   @ManyToOne(() => Store, (store) => store.products)
   store: Store;
 
@@ -53,4 +55,7 @@ export class Product {
 
   @ManyToMany(() => Provider, (provider) => provider.products)
   providers: Provider[];
+
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 }

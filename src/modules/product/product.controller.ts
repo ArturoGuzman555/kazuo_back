@@ -11,6 +11,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
   Req,
+  Patch,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -19,14 +20,20 @@ import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Product } from 'src/Entities/product.entity';
 import { Request } from 'express';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { ProductOwnershipGuard } from '../auth/guards/productownership-guard.guard';
+import { Roles } from 'src/decorators/roles.decorators';
+import { Role } from 'src/decorators/roles.enum';
 
+@ApiTags('products')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
   async create(@Body() createProduct: CreateProductDto) {
-    const product = await this.productService.create(createProduct); // Solo el argumento necesario
+    const product = await this.productService.create(createProduct); 
     return product;
   }
 
@@ -47,15 +54,21 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
   @Put(':id')
-  @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
-  update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateProduct: UpdateProductDto,
+  @ApiOperation({ summary: 'Actualizar un producto por ID' })
+  @ApiParam({ name: 'id', required: true, description: 'ID del producto a actualizar' })
+  @ApiResponse({ status: 200, description: 'Producto actualizado correctamente.' })
+  @ApiResponse({ status: 404, description: 'Producto no encontrado.' })
+  async update(
+      @Param('id') id: string,
+      @Body() updateProduct: UpdateProductDto,
   ) {
-    return this.productService.update(id, updateProduct);
+      return await this.productService.update(id, updateProduct);
   }
+  
 
   @Delete(':id')
   //@UseGuards(AuthGuard)
