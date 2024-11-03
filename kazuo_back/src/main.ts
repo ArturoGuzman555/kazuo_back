@@ -9,7 +9,7 @@ require('dotenv').config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(bodyParser.raw({ type: 'application/json' }));
+  // app.use(bodyParser.raw({ type: 'application/json' }));
 
   app.enableCors({
     origin: '*',
