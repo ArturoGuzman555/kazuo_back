@@ -61,6 +61,13 @@ export class Users {
     default: false,
   })
   isAdmin: boolean;
+
+  @ApiHideProperty()
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isSuperAdmin: boolean;
   @ApiProperty({
     description: 'URL de la imagen del usuario',
     example: 'https://example.com/image.jpg',

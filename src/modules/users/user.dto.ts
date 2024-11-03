@@ -71,6 +71,13 @@ export class CreateUserDto {
   @ApiHideProperty()
   @IsEmpty()
   isAdmin?: boolean;
+
+    /**
+   * Propiedad oculta
+   */
+    @ApiHideProperty()
+    @IsEmpty()
+    isSuperAdmin?: boolean;
 }
 
 export class LoginUserDto extends PickType(CreateUserDto, ['email']) {
