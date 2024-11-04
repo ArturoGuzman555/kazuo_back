@@ -59,7 +59,11 @@
 
     async findOne(id: string) {
       try {
-        return await this.productsRepository.findOneOrFail({ where: { id } });
+        const product = await this.productsRepository.findOneOrFail({
+          where: { id },
+          relations: ['store']
+        });
+        return product;
       } catch (error) {
         console.error(`Producto con ID ${id} no encontrado`, error);
         throw new NotFoundException(`Producto con ID ${id} no encontrado`);
