@@ -33,7 +33,7 @@ export class ProductService {
 
     const product = await this.productsRepository.findOne({
       where: { name: createProduct.name },
-    });
+    })
 
     if (product) {
       throw new ConflictException('El producto ya existe');
