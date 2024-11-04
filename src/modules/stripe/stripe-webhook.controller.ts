@@ -18,7 +18,7 @@ export class StripeWebhookController {
     @Headers('stripe-signature') signature: string,
   ) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    let event: Stripe.Event;
+    let event: Stripe.Event;    
 
     try {
       event = this.stripe.webhooks.constructEvent(request.body, signature, webhookSecret);
@@ -30,20 +30,18 @@ export class StripeWebhookController {
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
+        await this.stripeService.handleCheckoutSessionCompleted(session);
         console.log('Checkout session completed:', session);
-        // Realiza acciones adicionales, como actualizar el estado de la suscripción
         break;
 
       case 'invoice.payment_succeeded':
         const invoice = event.data.object as Stripe.Invoice;
         console.log('Invoice payment succeeded:', invoice);
-        // Realiza la lógica adicional para confirmar el pago exitoso
         break;
 
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.log('Payment intent succeeded:', paymentIntent);
-        // Aquí puedes actualizar el estado del pago en tu base de datos
         break;
 
       default:

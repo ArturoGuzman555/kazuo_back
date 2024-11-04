@@ -77,4 +77,23 @@ export class StripeService {
       throw new BadRequestException(error.message || 'Error al crear la sesión de checkout');
     }
   }
+
+  async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+    // Obtén los detalles de la sesión
+    const customerId = session.customer as string;
+    const subscriptionId = session.subscription as string;
+
+    // Aquí puedes hacer lo siguiente:
+    // 1. Guardar o actualizar la suscripción en tu base de datos.
+    // 2. Activar la cuenta de usuario o actualizar su nivel de suscripción.
+    // 3. Notificar al usuario, enviar un email de confirmación, etc.
+
+    // Ejemplo de lógica de actualización en base de datos
+    console.log(`Checkout session completed for customer ${customerId} with subscription ${subscriptionId}`);
+    
+    // Actualización de la base de datos (ejemplo)
+    // await this.database.updateUserSubscription(customerId, subscriptionId);
+
+    // Otra lógica adicional que requieras
+  }
 }
