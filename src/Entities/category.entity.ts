@@ -24,11 +24,6 @@ export class Category {
 
   @OneToMany(() => Store, (store) => store.category)
   stores: Store[];
-<<<<<<< HEAD
   @OneToMany(() => Product, (product) => product.category)
-=======
-
-  @ManyToMany(() => Product, (products) => products.category)
->>>>>>> origin
   products: Product[];
 }
