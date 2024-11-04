@@ -19,7 +19,6 @@ export class StripeService {
     });
   }
 
-<<<<<<< HEAD
   async createCheckoutSession(priceId: string) {
     return this.stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -28,26 +27,23 @@ export class StripeService {
       success_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/GestionInventario',
       cancel_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/Planes',
     });
-=======
-  constructEvent(payload: Buffer, signature: string): Stripe.Event {
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      throw new Error('STRIPE_WEBHOOK_SECRET debe ser proporcionada');
-    }
+  }
 
+  // Nuevo método constructEvent para manejar el webhook
+  constructEvent(payload: Buffer, signature: string): Stripe.Event {
     try {
-      return this.stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+      return this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET // asegúrate de definir esta variable en el entorno
+      );
     } catch (err) {
-      console.error('Error al verificar el evento del webhook:', err);
-      throw new BadRequestException('Webhook Error: ' + err.message);
+      throw new BadRequestException(`Webhook Error: ${err.message}`);
     }
->>>>>>> 963a8273ebf5c82ba1a736d53467c4b3c46a9f46
   }
 
   async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-    // Aquí procesas la información del session, como el ID del cliente, etc.
     console.log('Pago completado para sesión:', session.id);
-
-    // Aquí puedes manejar la lógica para actualizar el estado de la orden, notificar al usuario, etc.
+    // Lógica adicional para manejar la sesión completada
   }
 }
