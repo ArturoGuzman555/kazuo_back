@@ -1,7 +1,7 @@
 export const categoriesMock: string[] = [
-  'Smartphones',
+  'SmathPhones',
   'Laptops',
-  'tablets',
+  'Tablets',
   'Ropa',
   'Zapatos',
   'Perifericos',

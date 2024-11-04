@@ -19,6 +19,16 @@ export class StripeService {
     });
   }
 
+<<<<<<< HEAD
+  async createCheckoutSession(priceId: string) {
+    return this.stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/GestionInventario',
+      cancel_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/Planes',
+    });
+=======
   constructEvent(payload: Buffer, signature: string): Stripe.Event {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret) {
@@ -31,6 +41,7 @@ export class StripeService {
       console.error('Error al verificar el evento del webhook:', err);
       throw new BadRequestException('Webhook Error: ' + err.message);
     }
+>>>>>>> 963a8273ebf5c82ba1a736d53467c4b3c46a9f46
   }
 
   async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
