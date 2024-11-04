@@ -1,79 +1,88 @@
-// src/providers/providers.controller.ts
 import {
   Controller,
+  Get,
   Post,
   Body,
   Param,
-  NotFoundException,
-  ParseIntPipe,
-  Get,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Put,
+  ParseUUIDPipe,
   UseGuards,
+  Req,
+  Patch,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiBody,
-} from '@nestjs/swagger';
-import { ProvidersService } from './providers.service';
-import { AddProductToProviderDto, CreateProviderDto } from './providers.dto';
-import { Provider } from 'src/Entities/providers.entity';
+
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
-import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
+import { Product } from 'src/Entities/product.entity';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { Roles } from 'src/decorators/roles.decorators';
 import { Role } from 'src/decorators/roles.enum';
+import { ProductService } from 'src/modules/product/product.service';
+import { CreateProductDto } from 'src/modules/product/dto/create-product.dto';
+import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
+import { UpdateProductDto } from 'src/modules/product/dto/update-product.dto';
 
-@ApiTags('providers')
-@Controller('providers')
-export class ProvidersController {
-  constructor(private readonly providersService: ProvidersService) {}
-
-  @ApiOperation({ summary: 'Obtener todos los proveedores' }) 
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de todos los proveedores',
-    type: Provider,
-    isArray: true, 
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Error interno del servidor',
-  })
-  @Get()
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.SuperAdmin)
-  async getAllProviders(): Promise<Provider[]> {
-    return this.providersService.getAllProviders();
-  }
+@ApiTags('products')
+@Controller('product')
+export class ProductController {
+  constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Crear un nuevo proveedor' })
-  @ApiResponse({ status: 201, description: 'Proveedor creado exitosamente', type: Provider })
-  @ApiResponse({ status: 400, description: 'Error en los datos de entrada' })
-  async create(@Body() createProviderDto: CreateProviderDto): Promise<Provider> {
-    return await this.providersService.create(createProviderDto);
+  async create(@Body() createProduct: CreateProductDto) {
+    const product = await this.productService.create(createProduct); 
+    return product;
   }
 
-  @Post(':providerId/add-product')
+  @Post('bulk')
+  async bulkCreate(@Body() products: CreateProductDto[]) {
+    return this.productService.bulkCreate(products);
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  findAll() {
+    return this.productService.findAll();
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const product = await this.productService.findOne(id);
+  return {
+    ...product,
+    storeId: product.store.id
+  };
+  }
+
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Add a product to a provider' })
-  @ApiParam({ name: 'providerId', description: 'ID of the provider' })
-  @ApiResponse({
-    status: 200,
-    description: 'Product added to provider successfully.',
-  })
-  @ApiBody({ type: AddProductToProviderDto })
-  async addProductToProvider(
-    @Param('providerId', ParseIntPipe) providerId: string,
-    @Body() addProductToProviderDto: AddProductToProviderDto,
+  @Put(':id')
+  @ApiOperation({ summary: 'Actualizar un producto por ID' })
+  @ApiParam({ name: 'id', required: true, description: 'ID del producto a actualizar' })
+  @ApiResponse({ status: 200, description: 'Producto actualizado correctamente.' })
+  @ApiResponse({ status: 404, description: 'Producto no encontrado.' })
+  async update(
+      @Param('id') id: string,
+      @Body() updateProduct: UpdateProductDto,
   ) {
-    return this.providersService.addProductToProvider(
-      providerId,
-      addProductToProviderDto.productName,
-    );
+      return await this.productService.update(id, updateProduct);
+  }
+  
+
+  @Delete(':id')
+  //@UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productService.remove(id);
+  }
+
+  @Get('store/:storeId')
+  async getProductsByStoreId(
+    @Param('storeId') storeId: string,
+  ): Promise<Product[]> {
+    return await this.productService.getProductsByStoreId(storeId);
   }
 }
