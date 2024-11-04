@@ -12,6 +12,10 @@ export class ProvidersRepository extends Repository<Provider> {
     super(Provider, dataSource.createEntityManager());
   }
 
+  async getAllProviders(): Promise<Provider[]> {
+    return this.find({ relations: ['products', 'users'] });
+  }
+
   async createProvider(provider: Partial<Provider>): Promise<Provider> {
     return this.save(provider);
   }

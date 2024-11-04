@@ -44,3 +44,4 @@ config = {
 }
 console.log('Current working directory:', process.cwd());
 export default registerAs('typeorm', () => config);
+;

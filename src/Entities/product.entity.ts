@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Entity,
+  JoinColumn,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -57,5 +58,5 @@ export class Product {
   providers: Provider[];
 
   @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+category: Category;
 }

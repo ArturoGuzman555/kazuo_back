@@ -8,6 +8,7 @@ export class CompanyRepository extends Repository<Company> {
     super(Company, dataSource.createEntityManager());
   }
 
+  
   async createCompany(company: Partial<Company>): Promise<Company> {
     return this.save(company);
   }
