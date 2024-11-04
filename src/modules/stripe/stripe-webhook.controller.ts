@@ -21,22 +21,31 @@ export class StripeWebhookController {
     let event: Stripe.Event;
 
     try {
-      // Verifica el evento usando el secret del webhook
       event = this.stripe.webhooks.constructEvent(request.body, signature, webhookSecret);
     } catch (error) {
       console.error('Webhook signature verification failed:', error);
       throw new BadRequestException('Webhook signature verification failed');
     }
 
-    // Manejar eventos específicos
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
         console.log('Checkout session completed:', session);
-        // Aquí puedes implementar la lógica adicional que necesites
+        // Realiza acciones adicionales, como actualizar el estado de la suscripción
         break;
 
-      // Puedes agregar otros eventos que quieras manejar
+      case 'invoice.payment_succeeded':
+        const invoice = event.data.object as Stripe.Invoice;
+        console.log('Invoice payment succeeded:', invoice);
+        // Realiza la lógica adicional para confirmar el pago exitoso
+        break;
+
+      case 'payment_intent.succeeded':
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        console.log('Payment intent succeeded:', paymentIntent);
+        // Aquí puedes actualizar el estado del pago en tu base de datos
+        break;
+
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
