@@ -56,7 +56,5 @@ export class Product {
   providers: Provider[];
 
   @ManyToOne(() => Category, (category) => category.products)
-  @JoinColumn({ name: 'categoryId' }) 
-  category: Category;
-
+category: Category;
 }

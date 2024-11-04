@@ -18,7 +18,12 @@ export class ProvidersService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly usersService: UsersService,
+    private readonly providerRepository: ProvidersRepository,
   ) {}
+
+  async getAllProviders(): Promise<Provider[]> {
+    return this.providerRepository.find({ relations: ['products', 'users'] });
+  }
 
   async create(createProviderDto: CreateProviderDto): Promise<Provider> {
     const { userId } = createProviderDto;

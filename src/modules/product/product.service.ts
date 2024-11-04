@@ -33,7 +33,7 @@ export class ProductService {
 
     const product = await this.productsRepository.findOne({
       where: { name: createProduct.name },
-    });
+    })
 
     if (product) {
       throw new ConflictException('El producto ya existe');
@@ -75,12 +75,11 @@ export class ProductService {
   async remove(id: string) {
     const deleteProduct = await this.productsRepository.findOne({
       where: { id },
-      relations: ['user'], // Carga el usuario relacionado
+      relations: ['user'],
     });
 
     if (!deleteProduct) throw new NotFoundException('Producto no encontrado');
 
-    // Asegúrate de que deleteProduct.user.email exista antes de enviar el correo
     if (deleteProduct.user && deleteProduct.user.email) {
       await this.mailService.sendMail(
         deleteProduct.user.email,
