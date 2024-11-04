@@ -11,11 +11,12 @@ require('dotenv').config();
 
 async function bootstrap() {
   console.log('Current working directory:', process.cwd());
+
   const app = await NestFactory.create(AppModule);
   app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
 
-
   app.enableCors({
+    // origin: process.env.FRONTEND_URL,
     origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,

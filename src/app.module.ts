@@ -8,11 +8,11 @@ import { ProductModule } from './modules/product/product.module';
 import { UsersModule } from './modules/users/users.module';
 import { CategoryModule } from './modules/category/category.module';
 import { SeedsModule } from './modules/seeds.module';
-// import { PaymentModule, StripeModule } from './modules/stripe/payment.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { CompanyModule } from './company/company.module';
 import { ProvidersModule } from './providers/providers.module';
+import { StripeModule } from './modules/stripe/stripe.module';
 
 
 @Module({
@@ -26,7 +26,7 @@ import { ProvidersModule } from './providers/providers.module';
     CompanyModule,
     ProvidersModule,
 
-    //StripeModule,
+    StripeModule,
     SeedsModule,
 
     ConfigModule.forRoot({
