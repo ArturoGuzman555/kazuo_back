@@ -6,17 +6,15 @@ import { CategoriesSeed } from './modules/category/categories.seed';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 
-
 require('dotenv').config();
 
 async function bootstrap() {
   console.log('Current working directory:', process.cwd());
+  
   const app = await NestFactory.create(AppModule);
-  //app.use(bodyParser.raw({ type: 'application/json' }));
 
-
-  app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
-
+  // Middleware para el webhook de Stripe
+  app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 
   app.enableCors({
     origin: '*',
@@ -30,8 +28,6 @@ async function bootstrap() {
   const categoriesSeed = app.get(CategoriesSeed);
   await categoriesSeed.seed();
 
-  app.enableCors();
-
   const options = new DocumentBuilder()
     .setTitle('Kazuo')
     .setDescription('Proyecto Integrador')
@@ -42,14 +38,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
-  const PORT = process.env.PORT;
+  const PORT = process.env.PORT || 3000;
 
   await app.listen(PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
-
-  app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 }
+
 bootstrap();
+
 
 
 

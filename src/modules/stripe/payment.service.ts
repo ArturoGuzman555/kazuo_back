@@ -18,17 +18,6 @@ export class StripeService {
     });
   }
 
-<<<<<<< HEAD
-  async createCheckoutSession(priceId: string) {
-    return this.stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/GestionInventario',
-      cancel_url: 'https://sdq9hdq4-3001.brs.devtunnels.ms/Planes',
-    });
-  }
-=======
   async getPrices() {
     try {
       const prices = await this.stripe.prices.list({
@@ -58,28 +47,8 @@ export class StripeService {
     if (!priceId) {
       throw new BadRequestException('Se requiere el ID del precio');
     }
->>>>>>> 8584ec0535e7ee06a3eedef7373bc6cc828b276b
 
-  // Nuevo método constructEvent para manejar el webhook
-  constructEvent(payload: Buffer, signature: string): Stripe.Event {
     try {
-<<<<<<< HEAD
-      return this.stripe.webhooks.constructEvent(
-        payload,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET // asegúrate de definir esta variable en el entorno
-      );
-    } catch (err) {
-      throw new BadRequestException(`Webhook Error: ${err.message}`);
-    }
-  }
-
-  async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-    console.log('Pago completado para sesión:', session.id);
-    // Lógica adicional para manejar la sesión completada
-  }
-}
-=======
       // Verificar que el precio esté activo y su producto también
       const price = await this.stripe.prices.retrieve(priceId, {
         expand: ['product'],
@@ -110,4 +79,3 @@ export class StripeService {
     }
   }
 }
->>>>>>> 8584ec0535e7ee06a3eedef7373bc6cc828b276b
