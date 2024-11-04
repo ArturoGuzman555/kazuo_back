@@ -81,7 +81,7 @@ export class StoreService {
   async findOne(id: string) {
     const storeFound = await this.storeRepository.findOne({
       where: { id },
-      relations: ['category'],
+      relations: ['category', 'products'],
     });
 
     if (!storeFound) {

@@ -14,6 +14,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
 import { CompanyModule } from './company/company.module';
 import { ProvidersModule } from './providers/providers.module';
 import { InformesModule } from './modules/informes/informes.module';
+import { StripeModule } from './modules/stripe/payment.module';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { InformesModule } from './modules/informes/informes.module';
     ProvidersModule,
     InformesModule,
 
-    //StripeModule,
+    StripeModule,
     SeedsModule,
 
     ConfigModule.forRoot({
