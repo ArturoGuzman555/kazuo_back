@@ -14,7 +14,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Middleware para el webhook de Stripe
-  app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
+  app.use('/stripe/webhook', bodyParser.json({ type: 'application/json', verify: (req, res, buf) => {
+    req['rawBody'] = buf.toString();
+  }}));
 
   app.enableCors({
     origin: '*',
