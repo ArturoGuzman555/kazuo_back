@@ -49,7 +49,6 @@ export class StripeService {
     }
 
     try {
-      // Verificar que el precio esté activo y su producto también
       const price = await this.stripe.prices.retrieve(priceId, {
         expand: ['product'],
       });

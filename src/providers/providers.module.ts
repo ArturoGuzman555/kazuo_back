@@ -1,4 +1,3 @@
-// src/providers/providers.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProvidersService } from './providers.service';
