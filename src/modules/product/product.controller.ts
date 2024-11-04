@@ -55,9 +55,8 @@ export class ProductController {
   };
   }
 
-  // @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  // @ApiBearerAuth()
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un producto por ID' })
   @ApiParam({ name: 'id', required: true, description: 'ID del producto a actualizar' })
