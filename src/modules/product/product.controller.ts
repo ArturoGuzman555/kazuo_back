@@ -18,10 +18,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { Product } from 'src/Entities/product.entity';
-import { Request } from 'express';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { ProductOwnershipGuard } from '../auth/guards/productownership-guard.guard';
 import { Roles } from 'src/decorators/roles.decorators';
 import { Role } from 'src/decorators/roles.enum';
 
@@ -59,7 +57,6 @@ export class ProductController {
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  @ApiBearerAuth()
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un producto por ID' })
   @ApiParam({ name: 'id', required: true, description: 'ID del producto a actualizar' })
