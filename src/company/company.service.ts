@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyRepository } from './company.repository';
-import { CreateCompanyDto } from './company.dto';
+import { CreateCompanyDto, UpdateCompanyDto } from './company.dto';
 import { Company } from '../Entities/company.entity';
 import { UsersService } from '../modules/users/users.service';
 import { Repository } from 'typeorm';
@@ -22,11 +22,24 @@ export class CompanyService {
     return this.companyRepository.find({ relations: ['users'] });
   }
   
+  async updateCompany(
+    companyId: string,
+    updateCompanyDto: UpdateCompanyDto,
+  ): Promise<Company> {
+    const company = await this.companyRepository.findOne({ where: { id: companyId } });
+  
+    if (!company) {
+      throw new NotFoundException(`Compañía con id ${companyId} no encontrada`);
+    }
+  
+    Object.assign(company, updateCompanyDto);
+  
+    return this.companyRepository.save(company);
+  }
 
   async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { userId } = createCompanyDto;
 
-    // Verificar si el usuario ya tiene una compañía
     const existingCompanies = await this.companyRepository.find({
       where: { users: { id: userId } },
     });
