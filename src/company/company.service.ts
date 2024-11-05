@@ -85,31 +85,37 @@ export class CompanyService {
       where: { id: companyId },
       relations: ['users'],
     });
-
+  
     if (!company) {
       throw new NotFoundException('Compañía no encontrada');
     }
-
+  
     if (!company.users.some((user) => user.email === userEmail)) {
       const user = await this.usersService.getUserByEmail(userEmail);
       if (user) {
         company.users.push(user);
         await this.companyRepository.save(company);
+  
         await this.mailService.sendMail(
           user.email,
           'Fuiste agregado a una Compañía',
           `Hola ${user.name}, te informamos que has sido agregado a la compañía ${company.CompanyName}.`,
         );
+  
         await this.mailService.sendMail(
           company.email,
           'Nuevo usuario agregado a tu Compañía',
           `Hola, te informamos que el usuario ${user.name} (${user.email}) ha sido agregado a tu compañía ${company.CompanyName}.`,
         );
       } else {
-        throw new NotFoundException('Usuario no encontrado');
+        await this.mailService.sendMail(
+          userEmail,
+          'Invitación a registrarte',
+          `Hola, hemos recibido una solicitud para que te unas a la compañía ${company.CompanyName}. Por favor, regístrate en nuestro sitio para poder agregarte.`,
+        );
       }
     } else {
       throw new ConflictException('El usuario ya está en la compañía');
     }
   }
-}
+}  
