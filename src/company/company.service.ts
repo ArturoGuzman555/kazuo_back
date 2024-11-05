@@ -10,30 +10,34 @@ import { Company } from '../Entities/company.entity';
 import { UsersService } from '../modules/users/users.service';
 import { Repository } from 'typeorm';
 import { Users } from 'src/Entities/users.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class CompanyService {
   constructor(
     private readonly companyRepository: CompanyRepository,
     private readonly usersService: UsersService,
+    private readonly mailService: MailService,
   ) {}
 
   async getAllCompanies(): Promise<Company[]> {
     return this.companyRepository.find({ relations: ['users'] });
   }
-  
+
   async updateCompany(
     companyId: string,
     updateCompanyDto: UpdateCompanyDto,
   ): Promise<Company> {
-    const company = await this.companyRepository.findOne({ where: { id: companyId } });
-  
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId },
+    });
+
     if (!company) {
       throw new NotFoundException(`Compañía con id ${companyId} no encontrada`);
     }
-  
+
     Object.assign(company, updateCompanyDto);
-  
+
     return this.companyRepository.save(company);
   }
 
@@ -45,7 +49,9 @@ export class CompanyService {
     });
 
     if (existingCompanies.length > 0) {
-      throw new ConflictException('El usuario ya tiene una compañía registrada.');
+      throw new ConflictException(
+        'El usuario ya tiene una compañía registrada.',
+      );
     }
 
     const user = await this.usersService.getUserById(userId);
@@ -79,22 +85,37 @@ export class CompanyService {
       where: { id: companyId },
       relations: ['users'],
     });
-
+  
     if (!company) {
-      throw new Error('Compañía no encontrada');
+      throw new NotFoundException('Compañía no encontrada');
     }
-
-    
+  
     if (!company.users.some((user) => user.email === userEmail)) {
       const user = await this.usersService.getUserByEmail(userEmail);
       if (user) {
-        company.users.push(user); 
+        company.users.push(user);
         await this.companyRepository.save(company);
+  
+        await this.mailService.sendMail(
+          user.email,
+          'Fuiste agregado a una Compañía',
+          `Hola ${user.name}, te informamos que has sido agregado a la compañía ${company.CompanyName}.`,
+        );
+  
+        await this.mailService.sendMail(
+          company.email,
+          'Nuevo usuario agregado a tu Compañía',
+          `Hola, te informamos que el usuario ${user.name} (${user.email}) ha sido agregado a tu compañía ${company.CompanyName}.`,
+        );
       } else {
-        throw new NotFoundException('Usuario no encontrado');
+        await this.mailService.sendMail(
+          userEmail,
+          'Invitación a registrarte',
+          `Hola, hemos recibido una solicitud para que te unas a la compañía ${company.CompanyName}. Por favor, regístrate en nuestro sitio para poder agregarte.`,
+        );
       }
     } else {
       throw new ConflictException('El usuario ya está en la compañía');
     }
   }
-}
+}  

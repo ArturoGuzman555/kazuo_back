@@ -55,6 +55,4 @@ export class AuthController {
     const { token, newPassword, confirmNewPass } = resetPasswordDto;
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
-
- 
 }

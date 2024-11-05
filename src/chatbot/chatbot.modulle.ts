@@ -6,9 +6,8 @@ import { ProductService } from 'src/modules/product/product.service';
 import { CompanyModule } from 'src/company/company.module';
 import { ProductModule } from 'src/modules/product/product.module';
 
-
 @Module({
-    imports: [CompanyModule, ProductModule],
+  imports: [CompanyModule, ProductModule],
   controllers: [ChatBotController],
   providers: [ChatBotService],
 })

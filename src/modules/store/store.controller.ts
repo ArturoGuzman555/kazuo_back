@@ -20,7 +20,6 @@ import { Roles } from 'src/decorators/roles.decorators';
 import { AuthGuard } from '../auth/guards/auth-guard.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
-
 @Controller('store')
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}

@@ -13,7 +13,11 @@ import { ProductModule } from 'src/modules/product/product.module';
 import { ProvidersController } from './providers.contoller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Provider, Product]),UsersModule, ProductModule],
+  imports: [
+    TypeOrmModule.forFeature([Provider, Product]),
+    UsersModule,
+    ProductModule,
+  ],
   controllers: [ProvidersController],
   providers: [ProvidersService, UsersService, ProvidersRepository],
   exports: [ProvidersService],

@@ -58,7 +58,7 @@ export class Company {
     example: '5551678033',
   })
   @Column({
-    type: 'bigint'
+    type: 'bigint',
   })
   contactPhone: Number;
 
@@ -89,10 +89,10 @@ export class Company {
   createdAt: Date;
 
   @ManyToMany(() => Users, (user) => user.companies, { onDelete: 'CASCADE' })
-@JoinTable({
-  name: 'user_company',
-  joinColumn: { name: 'company_id', referencedColumnName: 'id' },
-  inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
-})
-users: Users[];
+  @JoinTable({
+    name: 'user_company',
+    joinColumn: { name: 'company_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  users: Users[];
 }

@@ -8,7 +8,6 @@ import { UsersModule } from '../users/users.module';
 import { CryptoService } from 'src/crypto/crypto.service';
 import { UserRepository } from '../users/users.repository';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Users]), MailModule, UsersModule],
   controllers: [AuthController],

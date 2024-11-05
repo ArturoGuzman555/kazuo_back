@@ -29,12 +29,12 @@ import { Role } from 'src/decorators/roles.enum';
 export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
-  @ApiOperation({ summary: 'Obtener todos los proveedores' }) 
+  @ApiOperation({ summary: 'Obtener todos los proveedores' })
   @ApiResponse({
     status: 200,
     description: 'Lista de todos los proveedores',
     type: Provider,
-    isArray: true, 
+    isArray: true,
   })
   @ApiResponse({
     status: 500,
@@ -51,9 +51,15 @@ export class ProvidersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiOperation({ summary: 'Crear un nuevo proveedor' })
-  @ApiResponse({ status: 201, description: 'Proveedor creado exitosamente', type: Provider })
+  @ApiResponse({
+    status: 201,
+    description: 'Proveedor creado exitosamente',
+    type: Provider,
+  })
   @ApiResponse({ status: 400, description: 'Error en los datos de entrada' })
-  async create(@Body() createProviderDto: CreateProviderDto): Promise<Provider> {
+  async create(
+    @Body() createProviderDto: CreateProviderDto,
+  ): Promise<Provider> {
     return await this.providersService.create(createProviderDto);
   }
 

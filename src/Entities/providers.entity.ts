@@ -39,10 +39,10 @@ export class Provider {
   products: Product[];
 
   @ManyToMany(() => Users, (user) => user.providers, { onDelete: 'CASCADE' })
-@JoinTable({
-  name: 'providers_users',
-  joinColumn: { name: 'provider_id', referencedColumnName: 'id' },
-  inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
-})
-users: Users[];
+  @JoinTable({
+    name: 'providers_users',
+    joinColumn: { name: 'provider_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  users: Users[];
 }

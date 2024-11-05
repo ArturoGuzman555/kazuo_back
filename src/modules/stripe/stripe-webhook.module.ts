@@ -8,4 +8,4 @@ import { StripeController } from './payment.controller';
   controllers: [, StripeWebhookController],
   providers: [StripeService, StripeController],
 })
-export class StripeModule {}
+export class StripeModule {}

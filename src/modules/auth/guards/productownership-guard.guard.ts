@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/Entities/product.entity';
 import { Repository } from 'typeorm';
@@ -12,8 +18,8 @@ export class ProductOwnershipGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const user = request.user || request.user.param.id 
-    const productId = request.body.id || request.params.id; 
+    const user = request.user || request.user.param.id;
+    const productId = request.body.id || request.params.id;
 
     if (!user) {
       throw new ForbiddenException('No autorizado');
@@ -29,7 +35,9 @@ export class ProductOwnershipGuard implements CanActivate {
     }
 
     if (product.user.id !== user.id) {
-      throw new ForbiddenException('No tienes permiso para modificar este producto');
+      throw new ForbiddenException(
+        'No tienes permiso para modificar este producto',
+      );
     }
 
     return true;

@@ -1,5 +1,12 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, IsPhoneNumber, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsPhoneNumber,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateCompanyDto {
   @ApiProperty({
@@ -67,8 +74,6 @@ export class AddUserToCompanyDto {
   @IsEmail({}, { message: 'El correo electrónico debe ser válido.' })
   @IsNotEmpty({ message: 'El correo electrónico no puede estar vacío.' })
   email: string;
-
-  
 }
 
 export class UpdateCompanyDto {
@@ -87,17 +92,26 @@ export class UpdateCompanyDto {
   @IsString()
   address?: string;
 
-  @ApiProperty({ description: 'Teléfono de contacto de la compañía', required: false })
+  @ApiProperty({
+    description: 'Teléfono de contacto de la compañía',
+    required: false,
+  })
   @IsOptional()
   @IsNumber()
   contactPhone?: number;
 
-  @ApiProperty({ description: 'Correo electrónico de la compañía', required: false })
+  @ApiProperty({
+    description: 'Correo electrónico de la compañía',
+    required: false,
+  })
   @IsOptional()
   @IsEmail()
   email?: string;
 
-  @ApiProperty({ description: 'Tipo de industria de la compañía', required: false })
+  @ApiProperty({
+    description: 'Tipo de industria de la compañía',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   industry?: string;

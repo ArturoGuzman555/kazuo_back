@@ -14,8 +14,8 @@ export class ResetPasswordGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     const token = request.body.token;
-    const newPassword = request.body.newPassword; 
-    const confirmNewPass = request.body.confirmNewPass; 
+    const newPassword = request.body.newPassword;
+    const confirmNewPass = request.body.confirmNewPass;
 
     if (!token) {
       throw new BadRequestException(

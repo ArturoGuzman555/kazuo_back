@@ -9,7 +9,7 @@ export class StripeService {
 
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
   ) {
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('STRIPE_SECRET_KEY debe ser proporcionada');
@@ -19,7 +19,7 @@ export class StripeService {
     }
 
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2024-10-28.acacia",
+      apiVersion: '2024-10-28.acacia',
     });
   }
 
@@ -31,7 +31,10 @@ export class StripeService {
       });
 
       const activePrices = prices.data.filter(
-        (price) => price.active && price.product && (price.product as Stripe.Product).active
+        (price) =>
+          price.active &&
+          price.product &&
+          (price.product as Stripe.Product).active,
       );
 
       return activePrices.map((price) => ({
@@ -43,14 +46,18 @@ export class StripeService {
       }));
     } catch (error) {
       console.error('Error al obtener los precios:', error);
-      throw new BadRequestException(error.message || 'Error al obtener los precios');
+      throw new BadRequestException(
+        error.message || 'Error al obtener los precios',
+      );
     }
   }
 
   async createCheckoutSession(priceId: string, userEmail: string) {
     console.log('Creando sesión de checkout para priceId:', priceId);
     if (!priceId || !userEmail) {
-      throw new BadRequestException('Se requiere el ID del precio y el correo del usuario');
+      throw new BadRequestException(
+        'Se requiere el ID del precio y el correo del usuario',
+      );
     }
 
     try {
@@ -59,7 +66,9 @@ export class StripeService {
       });
 
       if (!price.active || !(price.product as Stripe.Product).active) {
-        throw new BadRequestException('El precio o el producto asociado no está activo');
+        throw new BadRequestException(
+          'El precio o el producto asociado no está activo',
+        );
       }
 
       const session = await this.stripe.checkout.sessions.create({
@@ -76,7 +85,9 @@ export class StripeService {
       });
 
       // Actualiza al usuario después de crear la sesión
-      const user = await this.userRepository.findOne({ where: { email: userEmail } });
+      const user = await this.userRepository.findOne({
+        where: { email: userEmail },
+      });
       if (!user) throw new BadRequestException('Usuario no encontrado');
 
       user.pay = true;
@@ -87,14 +98,18 @@ export class StripeService {
       await this.mailService.sendMail(
         user.email,
         'Pago Procesado Exitosamente',
-        `Hola ${user.name}, tu pago ha sido procesado exitosamente y ahora tienes acceso como administrador.`
+        `Hola ${user.name}, tu pago ha sido procesado exitosamente y ahora tienes acceso como administrador.`,
       );
 
-      console.log(`Sesión de checkout creada y usuario actualizado: ${user.email}`);
+      console.log(
+        `Sesión de checkout creada y usuario actualizado: ${user.email}`,
+      );
       return { url: session.url };
     } catch (error) {
       console.error('Error al crear la sesión de checkout:', error);
-      throw new BadRequestException(error.message || 'Error al crear la sesión de checkout');
+      throw new BadRequestException(
+        error.message || 'Error al crear la sesión de checkout',
+      );
     }
   }
 
@@ -102,13 +117,19 @@ export class StripeService {
     const userEmail = session.customer_email;
 
     try {
-      const user = await this.userRepository.findOne({ where: { email: userEmail } });
+      const user = await this.userRepository.findOne({
+        where: { email: userEmail },
+      });
       if (!user) throw new BadRequestException('Usuario no encontrado');
 
-      console.log(`Pago completado y usuario ya actualizado previamente: ${user.email}`);
+      console.log(
+        `Pago completado y usuario ya actualizado previamente: ${user.email}`,
+      );
     } catch (error) {
       console.error('Error al completar la sesión de checkout:', error);
-      throw new BadRequestException(error.message || 'Error al completar la sesión de checkout');
+      throw new BadRequestException(
+        error.message || 'Error al completar la sesión de checkout',
+      );
     }
   }
 }
