@@ -12,11 +12,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  // Configuración del middleware específico para el webhook de Stripe
+
   app.use('/stripe/webhook', bodyParser.raw({ 
     type: 'application/json', 
     verify: (req, res, buf) => {
-      req['rawBody'] = buf.toString();  // Guardar el cuerpo en formato raw para el webhook de Stripe
+      req['rawBody'] = buf.toString();
     },
   }));
 
