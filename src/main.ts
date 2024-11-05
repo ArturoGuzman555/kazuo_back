@@ -4,19 +4,21 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CategoriesSeed } from './modules/category/categories.seed';
 import * as bodyParser from 'body-parser';
-import * as express from 'express';
 
 require('dotenv').config();
 
 async function bootstrap() {
   console.log('Current working directory:', process.cwd());
-  
+
   const app = await NestFactory.create(AppModule);
 
-  // Middleware para el webhook de Stripe
-  app.use('/stripe/webhook', bodyParser.json({ type: 'application/json', verify: (req, res, buf) => {
-    req['rawBody'] = buf.toString();
-  }}));
+  // Configuración del middleware específico para el webhook de Stripe
+  app.use('/stripe/webhook', bodyParser.raw({ 
+    type: 'application/json', 
+    verify: (req, res, buf) => {
+      req['rawBody'] = buf.toString();  // Guardar el cuerpo en formato raw para el webhook de Stripe
+    },
+  }));
 
   app.enableCors({
     origin: '*',
@@ -47,6 +49,7 @@ async function bootstrap() {
 }
 
 bootstrap();
+
 
 
 
