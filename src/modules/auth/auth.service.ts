@@ -132,5 +132,4 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(password, salt);
   }
-
 }

@@ -108,8 +108,14 @@ export class Users {
   products: Product[];
   companys: any;
 
-  @ManyToMany(() => Company, (company) => company.users, { cascade: true, onDelete: 'CASCADE' })
+  @ManyToMany(() => Company, (company) => company.users, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   companies: Company[];
-  @ManyToMany(() => Provider, (provider) => provider.users, { cascade: true, onDelete: 'CASCADE' })
-providers: Provider[];
+  @ManyToMany(() => Provider, (provider) => provider.users, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  providers: Provider[];
 }
