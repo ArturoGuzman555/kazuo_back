@@ -1,9 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import Stripe from 'stripe';
+import { UserRepository } from '../users/users.repository';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
+  private userRepository: UserRepository;
+  private mailService: MailService;
+
 
   constructor() {
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -79,21 +84,27 @@ export class StripeService {
   }
 
   async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-    // Obtén los detalles de la sesión
     const customerId = session.customer as string;
-    const subscriptionId = session.subscription as string;
+    const userEmail = session.customer_email;
 
-    // Aquí puedes hacer lo siguiente:
-    // 1. Guardar o actualizar la suscripción en tu base de datos.
-    // 2. Activar la cuenta de usuario o actualizar su nivel de suscripción.
-    // 3. Notificar al usuario, enviar un email de confirmación, etc.
+    try {
+      const user = await this.userRepository.findOne({ where: { email: userEmail } });
+      if (!user) throw new BadRequestException('Usuario no encontrado');
 
-    // Ejemplo de lógica de actualización en base de datos
-    console.log(`Checkout session completed for customer ${customerId} with subscription ${subscriptionId}`);
-    
-    // Actualización de la base de datos (ejemplo)
-    // await this.database.updateUserSubscription(customerId, subscriptionId);
+      user.pay = true;
+      user.isAdmin = true;
+      await this.userRepository.save(user);
 
-    // Otra lógica adicional que requieras
+      await this.mailService.sendMail(
+        user.email,
+        'Pago Procesado Exitosamente',
+        `Hola ${user.name}, tu pago ha sido procesado exitosamente y ahora tienes acceso como administrador.`,
+      );
+
+      console.log(`Pago completado y usuario actualizado: ${user.email}`);
+    } catch (error) {
+      console.error('Error al completar la sesión de checkout:', error);
+      throw new BadRequestException(error.message || 'Error al completar la sesión de checkout');
+    }
   }
 }
