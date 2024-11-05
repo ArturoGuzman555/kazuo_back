@@ -40,6 +40,22 @@ export class CompanyController {
     return this.companyService.getAllCompanies();
   }
 
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Obtener las compañías de un usuario específico' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de compañías del usuario',
+    type: Company,
+    isArray: true,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario no encontrado',
+  })
+  async getCompaniesByUserId(@Param('userId') userId: string): Promise<Company[]> {
+    return this.companyService.getCompaniesByUserId(userId);
+  }
+
   @Post()
   @ApiResponse({ status: 201, description: 'Compañía creada exitosamente.' })
   @ApiResponse({
