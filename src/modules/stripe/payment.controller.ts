@@ -1,6 +1,11 @@
-import { Controller, Get, Post, Body, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  BadRequestException,
+} from '@nestjs/common';
 import { StripeService } from './payment.service';
-
 
 @Controller('stripe')
 export class StripeController {
@@ -14,7 +19,7 @@ export class StripeController {
   @Post('create-checkout-session')
   async createCheckoutSession(
     @Body('priceId') priceId: string,
-    @Body('userEmail') userEmail: string,  // Extrae userEmail del cuerpo de la solicitud
+    @Body('userEmail') userEmail: string, // Extrae userEmail del cuerpo de la solicitud
   ) {
     if (!priceId || !userEmail) {
       throw new BadRequestException('priceId y userEmail son requeridos');

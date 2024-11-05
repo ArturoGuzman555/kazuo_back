@@ -166,9 +166,7 @@ export class UpdateUserDto {
   @ApiHideProperty()
   @IsEmpty()
   isSuperAdmin?: boolean = false;
-
 }
-
 
 export class ResetPasswordDto {
   @ApiProperty({
@@ -214,4 +212,3 @@ export class EncryptPasswordDto {
   @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
   password: string;
 }
-

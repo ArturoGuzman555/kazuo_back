@@ -58,5 +58,5 @@ export class Product {
   providers: Provider[];
 
   @ManyToOne(() => Category, (category) => category.products)
-category: Category;
+  category: Category;
 }

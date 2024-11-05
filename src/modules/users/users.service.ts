@@ -35,13 +35,13 @@ export class UsersService {
     }
     const newUser = {
       ...user,
-      createdAt: new Date(),  
+      createdAt: new Date(),
     };
-  
+
     const savedUser = await this.userRepository.createUser(newUser);
     const { password, ...userWithoutPassword } = savedUser;
-  
-    return userWithoutPassword; 
+
+    return userWithoutPassword;
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {

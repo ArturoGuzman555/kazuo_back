@@ -5,10 +5,9 @@ import { UsersModule } from '../users/users.module';
 import { MailService } from 'src/mail/mail.service';
 import { MailModule } from 'src/mail/mail.module';
 
-
 @Module({
   controllers: [StripeController],
   providers: [StripeService],
-  imports:[UsersModule, MailModule]
+  imports: [UsersModule, MailModule],
 })
 export class StripeModule {}

@@ -24,7 +24,6 @@ export class CategoryService {
 
     const newCategory = new Category();
     newCategory.name = categoryName;
-    
 
     const savedCategory = await this.categoryRepository.save(newCategory);
     return { message: 'Categoría creada exitosamente', savedCategory };

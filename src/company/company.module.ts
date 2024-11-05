@@ -5,11 +5,13 @@ import { CompanyService } from './company.service';
 import { Company } from '../Entities/company.entity';
 import { CompanyRepository } from './company.repository';
 import { UsersModule } from 'src/modules/users/users.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Company, CompanyRepository]),
     UsersModule,
+    MailModule,
   ],
   providers: [CompanyService, CompanyRepository],
   controllers: [CompanyController],

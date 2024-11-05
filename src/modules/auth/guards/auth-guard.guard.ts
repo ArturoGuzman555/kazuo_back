@@ -12,7 +12,7 @@ import { Role } from 'src/decorators/roles.enum';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
-  
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -20,14 +20,14 @@ export class AuthGuard implements CanActivate {
 
     const token = request.headers.authorization?.split(' ')[1];
     if (!token) throw new UnauthorizedException('Se requiere Token');
-    
+
     try {
       const secret = process.env.JWT_SECRET;
       const payload = this.jwtService.verify(token, { secret });
 
       payload.exp = new Date(payload.exp * 1000);
       payload.iat = new Date(payload.iat * 1000);
-      
+
       const roles: Role[] = [];
       if (payload.isAdmin) {
         roles.push(Role.Admin);
@@ -35,15 +35,14 @@ export class AuthGuard implements CanActivate {
       if (payload.isSuperAdmin) {
         roles.push(Role.SuperAdmin);
       }
-      
-      
+
       console.log('Roles del usuario:', roles);
 
       request.user = {
         userId: payload.id,
         roles: roles,
       };
-      
+
       if (
         request.body &&
         request.body.userId &&
@@ -68,7 +67,7 @@ export class AuthGuard implements CanActivate {
         }
       }
 
-      return true; 
+      return true;
     } catch (error) {
       throw new UnauthorizedException('Token invalido');
     }

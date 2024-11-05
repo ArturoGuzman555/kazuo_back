@@ -4,7 +4,6 @@ import { CompanyService } from 'src/company/company.service';
 import { CreateProductDto } from 'src/modules/product/dto/create-product.dto';
 import { ProductService } from 'src/modules/product/product.service';
 
-
 @Injectable()
 export class ChatBotService {
   constructor(
@@ -17,14 +16,16 @@ export class ChatBotService {
 
     if (lowerMessage.includes('crear empresa')) {
       return {
-        prompt: 'Por favor, proporcione los datos para registrar la empresa (nombre, país, dirección, etc.).',
+        prompt:
+          'Por favor, proporcione los datos para registrar la empresa (nombre, país, dirección, etc.).',
         expectedInput: CreateCompanyDto,
       };
     }
 
     if (lowerMessage.includes('crear producto')) {
       return {
-        prompt: 'Por favor, proporcione los datos para crear el producto (nombre, precio, id de la bodega, etc.).',
+        prompt:
+          'Por favor, proporcione los datos para crear el producto (nombre, precio, id de la bodega, etc.).',
         expectedInput: CreateProductDto,
       };
     }

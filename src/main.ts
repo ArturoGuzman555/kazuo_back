@@ -12,13 +12,15 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-
-  app.use('/stripe/webhook', bodyParser.raw({ 
-    type: 'application/json', 
-    verify: (req, res, buf) => {
-      req['rawBody'] = buf.toString();
-    },
-  }));
+  app.use(
+    '/stripe/webhook',
+    bodyParser.raw({
+      type: 'application/json',
+      verify: (req, res, buf) => {
+        req['rawBody'] = buf.toString();
+      },
+    }),
+  );
 
   app.enableCors({
     origin: '*',
@@ -49,8 +51,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
-
-
-
-
