@@ -26,7 +26,6 @@ export class CompanyService {
   async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { userId } = createCompanyDto;
 
-    // Verificar si el usuario ya tiene una compañía
     const existingCompanies = await this.companyRepository.find({
       where: { users: { id: userId } },
     });

@@ -13,6 +13,6 @@ import { UsersModule } from 'src/modules/users/users.module';
   ],
   providers: [CompanyService, CompanyRepository],
   controllers: [CompanyController],
-  exports: [CompanyRepository],
+  exports: [CompanyRepository, CompanyService],
 })
 export class CompanyModule {}

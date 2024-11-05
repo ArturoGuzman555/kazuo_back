@@ -15,6 +15,7 @@ import { CompanyModule } from './company/company.module';
 import { ProvidersModule } from './providers/providers.module';
 import { InformesModule } from './modules/informes/informes.module';
 import { StripeModule } from './modules/stripe/payment.module';
+import { ChatbotModule } from './chatbot/chatbot.modulle';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { StripeModule } from './modules/stripe/payment.module';
     CompanyModule,
     ProvidersModule,
     InformesModule,
+    ChatbotModule,
 
     StripeModule,
     SeedsModule,
