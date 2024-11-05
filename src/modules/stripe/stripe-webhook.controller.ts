@@ -22,7 +22,7 @@ export class StripeWebhookController {
 
     try {
       // Intenta verificar el evento usando el webhook secret y el signature
-      event = this.stripe.webhooks.constructEvent(request.body, signature, webhookSecret);
+      event = this.stripe.webhooks.constructEvent(request['rawBody'], signature, webhookSecret)
     } catch (error) {
       console.error('Error de verificación de la firma del webhook:', error);
       // Si falla la verificación, envía una respuesta 400
