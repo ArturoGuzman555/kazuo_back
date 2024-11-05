@@ -8,9 +8,9 @@ import {
   UseGuards,
   Get,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CompanyService } from './company.service';
-import { AddUserToCompanyDto, CreateCompanyDto } from './company.dto';
+import { AddUserToCompanyDto, CreateCompanyDto, UpdateCompanyDto } from './company.dto';
 import { Roles } from 'src/decorators/roles.decorators';
 import { Role } from 'src/decorators/roles.enum';
 import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
@@ -18,6 +18,7 @@ import { AuthGuard } from 'src/modules/auth/guards/auth-guard.guard';
 import { Company } from 'src/Entities/company.entity';
 
 @ApiTags('companies')
+@ApiBearerAuth()
 @Controller('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
@@ -57,6 +58,8 @@ export class CompanyController {
   }
 
   @Post()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiResponse({ status: 201, description: 'Compañía creada exitosamente.' })
   @ApiResponse({
     status: 409,
@@ -88,4 +91,18 @@ export class CompanyController {
       companyId,
     );
   }
+
+  @Put(':companyId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiOperation({ summary: 'Actualizar datos de una compañía' })
+  @ApiResponse({ status: 200, description: 'Compañía actualizada exitosamente', type: Company })
+  @ApiResponse({ status: 404, description: 'Compañía no encontrada' })
+  async updateCompany(
+    @Param('companyId') companyId: string,
+    @Body() updateCompanyDto: UpdateCompanyDto,
+  ): Promise<Company> {
+    return this.companyService.updateCompany(companyId, updateCompanyDto);
+  }
+
 }
