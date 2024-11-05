@@ -26,24 +26,40 @@ export class CompanyService {
   async createCompany(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { userId } = createCompanyDto;
 
-    const user = await this.usersService.getUserById(userId);
-    if (!user) {
-        throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+    // Verificar si el usuario ya tiene una compañía
+    const existingCompanies = await this.companyRepository.find({
+      where: { users: { id: userId } },
+    });
+
+    if (existingCompanies.length > 0) {
+      throw new ConflictException('El usuario ya tiene una compañía registrada.');
     }
 
-    const newCompany = await this.companyRepository.create({
-        ...createCompanyDto,
-        createdAt: new Date(),
-    });
-    
-    
-    newCompany.users = [user];
-    
-   
-    await this.companyRepository.save(newCompany);
+    const user = await this.usersService.getUserById(userId);
+    if (!user) {
+      throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+    }
 
+    const newCompany = this.companyRepository.create({
+      ...createCompanyDto,
+      createdAt: new Date(),
+    });
+    newCompany.users = [user];
+
+    await this.companyRepository.save(newCompany);
     return newCompany;
-}
+  }
+
+  async getCompaniesByUserId(userId: string): Promise<Company[]> {
+    const user = await this.usersService.getUserById(userId);
+    if (!user) {
+      throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+    }
+
+    return this.companyRepository.find({
+      where: { users: { id: userId } },
+    });
+  }
 
   async addUserToCompany(userEmail: string, companyId: string): Promise<void> {
     const company = await this.companyRepository.findOne({
