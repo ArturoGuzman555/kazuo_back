@@ -70,7 +70,7 @@ export class Users {
   isSuperAdmin: boolean;
   @ApiProperty({
     description: 'URL de la imagen del usuario',
-    example: 'https://example.com/image.jpg',
+    example: 'https://res.cloudinary.com/dytdzrpgq/image/upload/v1730841991/kh1rrkfxnass7dbaop7d.jpg',
   })
   @Column({
     type: 'varchar',
