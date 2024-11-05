@@ -52,6 +52,17 @@ export class StoreController {
     return this.storeService.findOne(id);
   }
 
+  @Get('infoStore/:id')
+  async getInfoBodega(@Param('id', ParseUUIDPipe) id: string) {
+    const storeData = await this.storeService.getInfoBodega(id);
+
+    const pdfBuffer = await this.storeService.generarPdf(storeData);
+
+    await this.storeService.enviarCorreoElectronico(pdfBuffer);
+
+    return { message: 'Informe generado y enviado por correo electrónico.' };
+  }
+
   @Put(':id')
   @Roles(Role.Admin)
   async update(

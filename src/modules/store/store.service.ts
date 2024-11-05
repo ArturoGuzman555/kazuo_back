@@ -10,6 +10,8 @@ import { Store } from 'src/Entities/store.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
 import { Users } from 'src/Entities/users.entity';
+import PDFDocument from 'pdfkit';
+import { createTransport } from 'nodemailer';
 
 @Injectable()
 export class StoreService {
@@ -153,5 +155,137 @@ export class StoreService {
       ...rest,
       categoryId: category.id,
     }));
+  }
+
+  async getInfoBodega(id: string) {
+    const storeFound = await this.storeRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
+    if (!storeFound) {
+      throw new NotFoundException('Bodega no encontrada');
+    }
+    return storeFound;
+  }
+
+  async generarPdf(storeData: any): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      if (!storeData.products || storeData.products.length === 0) {
+        console.log('No hay productos para generar el PDF');
+        reject(new Error('No hay productos para generar el PDF'));
+        return;
+      }
+
+      const pdf = new PDFDocument({
+        size: 'A4',
+        layout: 'landscape',
+        margin: 20,
+      });
+      const chunks: Buffer[] = [];
+
+      pdf.on('data', (chunk) => chunks.push(chunk));
+      pdf.on('end', () => resolve(Buffer.concat(chunks)));
+      pdf.on('error', (err) => reject(err));
+
+      pdf
+        .font('Helvetica-Bold')
+        .fontSize(14)
+        .text('Informe de Bodega: ${storeData.name}', { align: 'center' });
+      pdf.moveDown();
+
+      const columns = [
+        { header: 'Producto', width: 70 },
+        { header: 'Cantidad', width: 40 },
+        { header: 'Precio', width: 60 },
+        { header: 'Stock Mínimo', width: 40 },
+      ];
+
+      const tableWidth = columns.reduce((sum, col) => sum + col.width, 0);
+      let startX = (pdf.page.width - tableWidth) / 2; 
+      let yPosition = pdf.y;
+
+      columns.forEach((col) => {
+        pdf.rect(startX, yPosition, col.width, 15).stroke();
+        pdf.text(col.header, startX, yPosition, {
+          width: col.width,
+          align: 'center',
+        });
+        startX += col.width;
+      });
+      yPosition += 15;
+
+      storeData.products.forEach((product) => {
+        let xPosition = startX;
+        columns.forEach((col) => {
+          let value = '';
+          switch (col.header) {
+            case 'Producto':
+              value = product.name;
+              break;
+            case 'Cantidad':
+              value = product.quantity.toString();
+              break;
+            case 'Precio':
+              value = '${product.price}';
+              break;
+            case 'Stock Mínimo':
+              value = product.minStock.toString();
+              break;
+          }
+          pdf.text(value, xPosition, yPosition, {
+            width: col.width,
+            align: 'center',
+          });
+          pdf.rect(xPosition, yPosition, col.width, 15).stroke();
+          xPosition += col.width;
+        });
+        yPosition += 15;
+      });
+
+      pdf
+        .fontSize(8)
+        .text(
+          'Informe generado el ${new Date().toLocaleString()}',
+          30,
+          pdf.page.height - 30,
+          { align: 'center' },
+        );
+
+      pdf.end();
+    });
+  }
+
+  async enviarCorreoElectronico(pdf: Buffer) {
+    const transporter = createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: '"Kazuo" <kazuoflaias@gmail.com>',
+      to: 'xsaul.ortizx@gmail.com',
+      subject: 'Informe de Bodega',
+      text: 'Adjunto encontrarás el informe de la bodega.',
+      attachments: [
+        {
+          filename: 'informe_bodega.pdf',
+          content: pdf,
+        },
+      ],
+    };
+
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Correo enviado exitosamente:', info);
+      return info;
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      throw error;
+    }
   }
 }
