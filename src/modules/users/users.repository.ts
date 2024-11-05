@@ -62,4 +62,7 @@ export class UserRepository {
       },
     });
   }
+  async save(user: Users): Promise<Users> {
+    return this.userRepository.save(user);
+  }
 }

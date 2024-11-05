@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res, Headers, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Req, Res, Headers, BadRequestException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { StripeService } from './payment.service';
@@ -21,28 +21,24 @@ export class StripeWebhookController {
     let event: Stripe.Event;    
 
     try {
-      // Simulación de una respuesta exitosa
-      if (process.env.NODE_ENV === 'development') {
-        event = { type: 'checkout.session.completed', data: { object: {} } } as Stripe.Event;
-      } else {
-        event = this.stripe.webhooks.constructEvent(request['rawBody'], signature, webhookSecret);
-      }
+      // Intenta verificar el evento usando el webhook secret y el signature
+      event = this.stripe.webhooks.constructEvent(request.body, signature, webhookSecret);
     } catch (error) {
-      console.error('Webhook signature verification failed:', error);
-      throw new BadRequestException('Webhook signature verification failed');
+      console.error('Error de verificación de la firma del webhook:', error);
+      // Si falla la verificación, envía una respuesta 400
+      return response.status(HttpStatus.BAD_REQUEST).send('Webhook signature verification failed');
     }
-
-    switch (event.type) {
-      case 'checkout.session.completed':
-        const session = event.data.object as Stripe.Checkout.Session;
-        await this.stripeService.handleCheckoutSessionCompleted(session);
-        console.log('Simulación de una sesión de checkout completada:', session);
-        break;
-
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-
     response.status(200).json({ received: true });
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      await this.stripeService.handleCheckoutSessionCompleted(session);
+    }
+
+    // Responde a Stripe confirmando que se recibió el evento
+    response.status(HttpStatus.OK).send({ received: true });
   }
-}
+  }
+
+  
+
