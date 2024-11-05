@@ -18,42 +18,31 @@ export class StripeWebhookController {
     @Headers('stripe-signature') signature: string,
   ) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    let event: Stripe.Event;
-  
+    let event: Stripe.Event;    
+
     try {
-      // Usa `req['rawBody']` en lugar de `request.body` para la verificación
-      event = this.stripe.webhooks.constructEvent(
-        request['rawBody'], // Cambiado a rawBody
-        signature,
-        webhookSecret,
-      );
+      // Simulación de una respuesta exitosa
+      if (process.env.NODE_ENV === 'development') {
+        event = { type: 'checkout.session.completed', data: { object: {} } } as Stripe.Event;
+      } else {
+        event = this.stripe.webhooks.constructEvent(request['rawBody'], signature, webhookSecret);
+      }
     } catch (error) {
       console.error('Webhook signature verification failed:', error);
-      return response.status(400).send(`Webhook Error: ${error.message}`);
+      throw new BadRequestException('Webhook signature verification failed');
     }
-  
-    // Manejar eventos específicos
+
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
         await this.stripeService.handleCheckoutSessionCompleted(session);
-        console.log('Checkout session completed:', session);
+        console.log('Simulación de una sesión de checkout completada:', session);
         break;
-  
-      case 'invoice.payment_succeeded':
-        const invoice = event.data.object as Stripe.Invoice;
-        console.log('Invoice payment succeeded:', invoice);
-        break;
-  
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('Payment intent succeeded:', paymentIntent);
-        break;
-  
+
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
-  
+
     response.status(200).json({ received: true });
   }
 }
