@@ -8,6 +8,7 @@ import { MailService } from 'src/mail/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CryptoService } from 'src/crypto/crypto.service';
 import { UserRepository } from '../users/users.repository';
+import { Role } from 'src/decorators/roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -46,6 +47,8 @@ export class AuthService {
       name: user.name,
       id: user.id,
       igmUrl: user.imgUrl,
+      isAdmin: user.isAdmin ? true : false,
+      isSuperAdmin: user.isSuperAdmin ? true : false,      
     };
   }
 
@@ -131,5 +134,39 @@ export class AuthService {
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(password, salt);
+  }
+
+  async auth0Login(profile: any) {
+    console.log(profile)
+    const email = profile.emails[0].value;
+    let user = await this.userRepository.getUserByEmail(email);
+    console.log(user);
+    if (!user) {
+      user = await this.userRepository.createUser({
+        email,
+        name: profile.displayName,
+        password: '',
+      });
+      
+    }
+
+    const payload = { id: user.id, email: user.email, isAdmin: user.isAdmin };
+    const token = this.jwtService.sign(payload);
+
+    await this.mailService.sendMail(
+      email,
+      'Bienvenido a Kazuo',
+      `Hola ${profile.displayName}, gracias por registrarte en nuestra aplicación.`,
+    );
+    return { user, token };
+  }
+
+  async getUserByEmail(email: string): Promise<Users | null> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  async googleLogin(id: string) {
+    const user = await this.userRepository.findOne({ where: { email: id } });
+    return user ? { message: 'Usuario existente', user } : { message: 'Nuevo usuario' };
   }
 }

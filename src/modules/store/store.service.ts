@@ -93,7 +93,7 @@ export class StoreService {
     return { message: 'Bodega encontrada', storeFound };
   }
 
-  async update(id: string, updateStore: UpdateStoreDto) {
+  async update(id: string, updateStore: UpdateStoreDto, request: any) {
     const storeFound = await this.storeRepository.findOne({ where: { id } });
 
     if (!storeFound) {

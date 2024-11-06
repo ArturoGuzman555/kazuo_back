@@ -19,6 +19,7 @@ import { Role } from 'src/decorators/roles.enum';
 import { Roles } from 'src/decorators/roles.decorators';
 import { AuthGuard } from '../auth/guards/auth-guard.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { request } from 'http';
 
 @Controller('store')
 export class StoreController {
@@ -65,13 +66,13 @@ export class StoreController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard, /*RolesGuard*/)
   @Roles(Role.Admin)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStore: UpdateStoreDto,
   ) {
-    return this.storeService.update(id, updateStore);
+    return this.storeService.update(id, updateStore, request);
   }
 
   @Delete(':id')

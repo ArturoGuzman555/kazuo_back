@@ -55,4 +55,23 @@ export class AuthController {
     const { token, newPassword, confirmNewPass } = resetPasswordDto;
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
+
+  @Get('auth0')
+  @UseGuards(AuthGuard('auth0'))
+  async auth0Login() {
+    // Esta ruta redirige a Auth0 para autenticación.
+  }
+
+  @Get('auth0-callback')
+  @UseGuards(AuthGuard('auth0'))
+  async auth0Callback(@Req() req, @Res() res) {
+    const { user, token } = await this.authService.auth0Login(req.user);
+    res.redirect(`http://frontend-url.com/callback?token=${token}`);
+  }
+
+  @Get('google-login')
+async googleLogin(@Body('id') id: string) {
+  const result = await this.authService.googleLogin(id);
+  return result;
+}
 }
