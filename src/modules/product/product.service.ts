@@ -67,26 +67,44 @@ export class ProductService {
     } catch (error) {
       console.error(`Producto con ID ${id} no encontrado`, error);
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
-    }
+    };
   }
 
   async update(id: string, updateProduct: UpdateProductDto) {
-    const product = await this.productsRepository.findOne({ where: { id } });
-
+    const product = await this.productsRepository.findOne({ where: { id }, relations: ['user'] });
+  
     if (!product) {
       throw new NotFoundException('El producto no existe');
     }
+  
     Object.assign(product, updateProduct);
     product.updatedAt = new Date();
-
+  
     const updatedProduct = await this.productsRepository.save(product);
-
+  
+    const companyEmail = product.user.email;
+  
+    if (companyEmail) {
+      try {
+        await this.mailService.sendMail(
+          companyEmail,
+          'Bienvenido a Kazuo',
+          `El producto ${product.name} ha sido modificado.`,
+        );
+      } catch (error) {
+        console.error('Error enviando el correo:', error);
+      }
+    } else {
+      console.warn('No se encontró un email para la compañía asociada');
+    }
+  
     return {
       message: 'Producto actualizado correctamente',
       product: updatedProduct,
     };
   }
 
+  
   async remove(id: string) {
     const deleteProduct = await this.productsRepository.findOne({
       where: { id },

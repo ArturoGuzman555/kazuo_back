@@ -21,12 +21,12 @@ export class Store {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @ManyToOne(() => Category, (category) => category.stores)
+  @ManyToOne(() => Category, (category) => category.stores, { onDelete: 'CASCADE' })
   category: Category;
 
   @OneToMany(() => Product, (product) => product.store)
   products: Product[];
 
-  @ManyToOne(() => Users, (users) => users.stores)
+  @ManyToOne(() => Users, (users) => users.stores, { onDelete: 'CASCADE' })
   user: Users;
 }

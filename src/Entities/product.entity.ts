@@ -12,6 +12,7 @@ import { Store } from './store.entity';
 import { Users } from './users.entity';
 import { Provider } from './providers.entity';
 import { Category } from './category.entity';
+import { Company } from './company.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -48,15 +49,17 @@ export class Product {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(() => Store, (store) => store.products)
+  @ManyToOne(() => Store, (store) => store.products, { onDelete: 'CASCADE' })
   store: Store;
 
-  @ManyToOne(() => Users, (user) => user.stores)
+  @ManyToOne(() => Users, (user) => user.stores, { onDelete: 'CASCADE' })
   user: Users;
 
   @ManyToMany(() => Provider, (provider) => provider.products)
   providers: Provider[];
 
-  @ManyToOne(() => Category, (category) => category.products)
+  @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE' })
   category: Category;
+
+
 }
