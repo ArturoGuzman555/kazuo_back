@@ -9,5 +9,6 @@ import { Category } from 'src/Entities/category.entity';
   imports: [TypeOrmModule.forFeature([Store, Category])],
   controllers: [StoreController],
   providers: [StoreService],
+  exports:[StoreService],
 })
 export class StoreModule {}
