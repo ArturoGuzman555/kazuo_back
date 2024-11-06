@@ -6,10 +6,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Users } from './users.entity';
+import { Product } from './product.entity';
 
 @Entity({ name: 'companies' })
 export class Company {
@@ -95,4 +97,5 @@ export class Company {
     inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
   })
   users: Users[];
+
 }
