@@ -46,6 +46,8 @@ export class AuthService {
       name: user.name,
       id: user.id,
       igmUrl: user.imgUrl,
+      isAdmin: user.isAdmin ? true : false,
+      isSuperAdmin: user.isSuperAdmin ? true : false,      
     };
   }
 

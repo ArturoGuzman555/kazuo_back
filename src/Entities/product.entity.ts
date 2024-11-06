@@ -12,6 +12,7 @@ import { Store } from './store.entity';
 import { Users } from './users.entity';
 import { Provider } from './providers.entity';
 import { Category } from './category.entity';
+import { Company } from './company.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -59,4 +60,6 @@ export class Product {
 
   @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE' })
   category: Category;
+
+
 }
