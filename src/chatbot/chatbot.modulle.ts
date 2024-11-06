@@ -5,9 +5,10 @@ import { CompanyService } from 'src/company/company.service';
 import { ProductService } from 'src/modules/product/product.service';
 import { CompanyModule } from 'src/company/company.module';
 import { ProductModule } from 'src/modules/product/product.module';
+import { StoreModule } from 'src/modules/store/store.module';
 
 @Module({
-  imports: [CompanyModule, ProductModule],
+  imports: [CompanyModule, ProductModule, StoreModule],
   controllers: [ChatBotController],
   providers: [ChatBotService],
 })
