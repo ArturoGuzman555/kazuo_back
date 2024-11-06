@@ -18,8 +18,7 @@ if (process.env.NODE_ENV === 'production') {
     migrations: ['dist/migrations/*{.ts,.js}'],
     autoLoadEntities: true,
     logging: false,
-    synchronize: false,
-    dropropSchema: true,
+    synchronize: true,
     ssl: {
       rejectUnauthorized: false,
     },
