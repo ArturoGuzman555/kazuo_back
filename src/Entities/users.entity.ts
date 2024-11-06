@@ -77,7 +77,7 @@ export class Users {
     length: 255,
     nullable: true,
     default:
-      'https://res.cloudinary.com/dytdzrpgq/image/upload/v1729872252/wulqmufihk7yojgrwwks.jpg',
+      'https://res.cloudinary.com/dytdzrpgq/image/upload/v1730841991/kh1rrkfxnass7dbaop7d.jpg',
   })
   imgUrl?: string;
 
@@ -95,6 +95,9 @@ export class Users {
     default: false,
   })
   pay: boolean;
+
+  @Column({ unique: true })
+  auth0Id: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
