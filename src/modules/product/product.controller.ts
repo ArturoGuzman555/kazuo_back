@@ -36,23 +36,28 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
+
   async create(@Body() createProduct: CreateProductDto) {
     const product = await this.productService.create(createProduct);
     return product;
   }
 
   @Post('bulk')
+  @UseGuards(AuthGuard)
   async bulkCreate(@Body() products: CreateProductDto[]) {
     return this.productService.bulkCreate(products);
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.productService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const product = await this.productService.findOne(id);
@@ -84,13 +89,15 @@ export class ProductController {
   }
 
   @Delete(':id')
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productService.remove(id);
   }
 
   @Get('store/:storeId')
+  @UseGuards(AuthGuard)
   async getProductsByStoreId(
     @Param('storeId') storeId: string,
   ): Promise<Product[]> {

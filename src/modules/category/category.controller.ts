@@ -23,28 +23,29 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @Roles(Role.Admin)
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   create(@Body() createCategory: CreateCategoryDto) {
     return this.categoryService.create(createCategory);
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.categoryService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoryService.findOne(id);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
-  // @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -54,8 +55,8 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
-  // @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoryService.remove(id);

@@ -37,6 +37,8 @@ export class StoreController {
   }
 
   @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.SuperAdmin)
   findAll() {
     return this.storeService.findAll();
   }
@@ -63,6 +65,7 @@ export class StoreController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -72,6 +75,8 @@ export class StoreController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.storeService.remove(id);
   }

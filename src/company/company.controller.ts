@@ -51,6 +51,8 @@ export class CompanyController {
   }
 
   @Get('user/:userId')
+  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Obtener las compañías de un usuario específico' })
   @ApiResponse({
     status: 200,
