@@ -87,6 +87,7 @@ export class CompanyService {
     });
   
     if (!company) {
+      console.log('Error: Compañía no encontrada');
       throw new NotFoundException('Compañía no encontrada');
     }
   
@@ -96,6 +97,8 @@ export class CompanyService {
         company.users.push(user);
         await this.companyRepository.save(company);
   
+        console.log(`Usuario ${user.email} agregado a la compañía ${company.CompanyName} exitosamente.`);
+        
         await this.mailService.sendMail(
           user.email,
           'Fuiste agregado a una Compañía',
@@ -108,6 +111,8 @@ export class CompanyService {
           `Hola, te informamos que el usuario ${user.name} (${user.email}) ha sido agregado a tu compañía ${company.CompanyName}.`,
         );
       } else {
+        console.log(`El usuario con email ${userEmail} no existe en el sistema. Se enviará una invitación a registrarse.`);
+        
         await this.mailService.sendMail(
           userEmail,
           'Invitación a registrarte',
@@ -115,7 +120,9 @@ export class CompanyService {
         );
       }
     } else {
+      console.log(`El usuario con email ${userEmail} ya está en la compañía ${company.CompanyName}.`);
       throw new ConflictException('El usuario ya está en la compañía');
     }
   }
+  
 }  

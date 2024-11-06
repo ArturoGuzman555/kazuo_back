@@ -55,4 +55,10 @@ export class AuthController {
     const { token, newPassword, confirmNewPass } = resetPasswordDto;
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
+
+  @Get()
+  @UseGuards(AuthGuard('auth0'))
+  getProfile() {
+    return { message: 'Perfil del usuario' };
+  }
 }

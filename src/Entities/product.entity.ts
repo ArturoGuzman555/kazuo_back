@@ -48,15 +48,15 @@ export class Product {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(() => Store, (store) => store.products)
+  @ManyToOne(() => Store, (store) => store.products, { onDelete: 'CASCADE' })
   store: Store;
 
-  @ManyToOne(() => Users, (user) => user.stores)
+  @ManyToOne(() => Users, (user) => user.stores, { onDelete: 'CASCADE' })
   user: Users;
 
   @ManyToMany(() => Provider, (provider) => provider.products)
   providers: Provider[];
 
-  @ManyToOne(() => Category, (category) => category.products)
+  @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE' })
   category: Category;
 }
