@@ -142,7 +142,6 @@ export class AuthService {
     return bcrypt.hash(password, salt);
   }
   async validateUser(payload: any) {
-    // Verifica el usuario según el payload recibido
     return { userId: payload.sub, username: payload.name };
   }
 }
