@@ -96,8 +96,8 @@ export class Users {
   })
   pay: boolean;
 
-  @Column({ unique: true })
-  auth0Id: string;
+  // @Column({ unique: true })
+  // auth0Id: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
