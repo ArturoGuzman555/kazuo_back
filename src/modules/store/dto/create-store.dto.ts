@@ -30,5 +30,5 @@ export class CreateStoreDto {
     example: ['company_id_1', 'company_id_2'],
   })
   @IsNotEmpty()
-  companyIds: string[]; // Array de IDs de las empresas a asociar
+  companyIds: string[]; 
 }
