@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateStoreDto {
   @ApiProperty({
@@ -24,4 +24,11 @@ export class CreateStoreDto {
   })
   @IsNotEmpty()
   userId: string;
+
+  @ApiProperty({
+    description: 'IDs of the companies associated with the store',
+    example: ['company_id_1', 'company_id_2'],
+  })
+  @IsNotEmpty()
+  companyIds: string[]; // Array de IDs de las empresas a asociar
 }

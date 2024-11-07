@@ -7,9 +7,10 @@ import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from 'src/Entities/store.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Category } from 'src/Entities/category.entity';
 import { Users } from 'src/Entities/users.entity';
+import { CompanyRepository } from 'src/company/company.repository';
 
 @Injectable()
 export class StoreService {
@@ -18,37 +19,51 @@ export class StoreService {
     private readonly storeRepository: Repository<Store>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    private readonly companyRepository: CompanyRepository,
+
   ) {}
 
   async create(createStore: CreateStoreDto, request: any) {
     const user: Users = request.user;
-
+  
+    // Verificar si la tienda ya existe
     const bodega = await this.storeRepository.findOne({
       where: { name: createStore.name },
     });
-
+  
     if (bodega) {
       throw new ConflictException('La bodega ya existe');
     }
-
+  
     const category = await this.categoryRepository.findOne({
       where: { name: createStore.categoryName },
     });
-
+  
     if (!category) {
       throw new NotFoundException('La categoría no existe');
     }
-
+  
+    const companies = await this.companyRepository.find({
+      where: { id: In(createStore.companyIds) }, 
+    });
+  
+    if (!companies || companies.length === 0) {
+      throw new NotFoundException('No se encontraron empresas para asociar');
+    }
+  
     const newBodega = this.storeRepository.create({
       name: createStore.name,
       category: category,
       user: { id: createStore.userId },
+      companies, 
       createdAt: new Date(),
     });
-
+  
     await this.storeRepository.save(newBodega);
+    
     return { message: 'La bodega fue creada exitosamente', newBodega };
   }
+  
 
   async findAll() {
     const hola = await this.storeRepository.find({
@@ -61,8 +76,7 @@ export class StoreService {
   }
 
   async findAllStores(userId: string) {
-    const stores = await this.storeRepository.find({
-      where: { user: { id: userId } },
+    const stores = await this.storeRepository.find({      where: { user: { id: userId } },
       relations: ['category'],
     });
 
