@@ -4,40 +4,51 @@ import { ProductService } from 'src/modules/product/product.service';
 import { StoreService } from 'src/modules/store/store.service'; 
 @Injectable()
 export class ChatBotService {
+  private isFirstMessage: boolean = true;
+  private lastActivityTime: number = Date.now();
+  private readonly INACTIVITY_TIMEOUT = 5 * 60 * 1000;
   constructor(
     private readonly companyService: CompanyService,
     private readonly productService: ProductService,
     private readonly storeService: StoreService, 
   ) {}
 
+  private checkInactivity(): boolean {
+    const currentTime = Date.now();
+    if (currentTime - this.lastActivityTime > this.INACTIVITY_TIMEOUT) {
+      this.isFirstMessage = true;
+      return true;
+    }
+    this.lastActivityTime = currentTime;
+    return false;
+  }
+
   async handleChatQuery(message: string, userId: string) {
+    if (this.checkInactivity()) {
+      return {
+        prompt: `El chat se ha reiniciado debido a inactividad. Hola, soy R2D2-K tu asistente en Kazuo. ¿En qué te puedo ayudar el día de hoy?\n\nOpciones disponibles:\n1. Consultar mi bodega\n2. Agregar producto a mi bodega\n3. Consultar información de mi compañía\n4. Consultar proveedores\n5. Agregar proveedor\n6. Agregar usuario a mi compañía\n7. Eliminar un producto\n8. Hacer cíclicos\n\nPor favor, escribe el número o el nombre de la opción que deseas.`,
+      };
+    }
     const lowerMessage = message.toLowerCase();
 
    
-    if (
-      !lowerMessage.includes('crear empresa') &&
-      !lowerMessage.includes('crear producto') &&
-      !lowerMessage.includes('consultar mi bodega') &&
-      !lowerMessage.includes('agregar producto') &&
-      !lowerMessage.includes('consultar información de mi compañía') &&
-      !lowerMessage.includes('agregar proveedor') &&
-      !lowerMessage.includes('agregar usuario') &&
-      !lowerMessage.includes('eliminar producto') &&
-      !lowerMessage.includes('hacer ciclicos')
-    ) {
+    if (this.isFirstMessage) {
+      this.isFirstMessage = false;
       return {
         prompt: `Hola, soy R2D2-K tu asistente en Kazuo. ¿En qué te puedo ayudar el día de hoy?\n\nOpciones disponibles:\n1. Consultar mi bodega\n2. Agregar producto a mi bodega\n3. Consultar información de mi compañía\n4. Consultar proveedores\n5. Agregar proveedor\n6. Agregar usuario a mi compañía\n7. Eliminar un producto\n8. Hacer cíclicos\n\nPor favor, escribe el número o el nombre de la opción que deseas.`,
       };
     }
 
-    if (lowerMessage.includes('consultar mi bodega')) {
+    if (lowerMessage.includes('bodegas')) {
       try {
         const stores = await this.storeService.findAllStores(userId);
-        if (stores.length) {
+        if (stores.length > 0) {
           return {
             prompt: `Aquí tienes la información de tu(s) bodega(s):`,
             data: stores, 
           };
+        } else {
+          return { prompt: 'Aún no tienes bodegas registradas.' };
         }
       } catch (error) {
         if (error instanceof NotFoundException) {

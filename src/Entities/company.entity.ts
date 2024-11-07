@@ -12,6 +12,7 @@ import {
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Users } from './users.entity';
 import { Product } from './product.entity';
+import { Store } from './store.entity';
 
 @Entity({ name: 'companies' })
 export class Company {
@@ -98,4 +99,12 @@ export class Company {
   })
   users: Users[];
 
+  @ManyToMany(() => Store, (store) => store.companies, { onDelete: 'CASCADE' })
+  @JoinTable({
+    name: 'company_stores',  
+    joinColumn: { name: 'company_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'store_id', referencedColumnName: 'id' },
+  })
+  stores: Store[];
 }
+

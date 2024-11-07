@@ -124,5 +124,16 @@ export class CompanyService {
       throw new ConflictException('El usuario ya está en la compañía');
     }
   }
+
+  async storesByCompany(companyId: string) {
+    const stores = await this.companyRepository.find({
+      where: { id: companyId }, relations: ['stores'],
+    });
+    if (!stores){
+      throw new NotFoundException(`La compania con  id ${companyId} no fue encontrada`);
+    }
+
+    return stores
+  }
   
 }  

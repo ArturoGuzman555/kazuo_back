@@ -119,4 +119,9 @@ export class CompanyController {
   ): Promise<Company> {
     return this.companyService.updateCompany(companyId, updateCompanyDto);
   }
+
+  @Get('AllStoresCompany/:companyId')
+  async storesByCompany(@Param('companyId') companyId: string) {
+    return this.companyService.storesByCompany(companyId);
+  }
 }

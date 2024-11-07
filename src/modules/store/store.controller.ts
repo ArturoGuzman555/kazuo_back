@@ -25,7 +25,7 @@ import { request } from 'http';
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
-  @Post('bodega')
+  @Post('bodega/:companyId')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async create(@Body() createStore: CreateStoreDto, @Req() request: Request) {
