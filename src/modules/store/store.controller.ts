@@ -20,6 +20,7 @@ import { Role } from 'src/decorators/roles.enum';
 import { Roles } from 'src/decorators/roles.decorators';
 import { AuthGuard } from '../auth/guards/auth-guard.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { request } from 'http';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Users } from 'src/Entities/users.entity';
 import { Store } from 'src/Entities/store.entity';
@@ -66,14 +67,25 @@ export class StoreController {
     return this.storeService.findOne(id);
   }
 
+  @Get('infoStore/:id')
+  async getInfoBodega(@Param('id', ParseUUIDPipe) id: string) {
+    const storeData = await this.storeService.getInfoBodega(id);
+
+    const pdfBuffer = await this.storeService.generarPdf(storeData);
+
+    await this.storeService.enviarCorreoElectronico(pdfBuffer);
+
+    return { message: 'Informe generado y enviado por correo electrónico.' };
+  }
+
   @Put(':id')
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard, /*RolesGuard*/)
   @Roles(Role.Admin)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStore: UpdateStoreDto,
   ) {
-    return this.storeService.update(id, updateStore);
+    return this.storeService.update(id, updateStore, request);
   }
 
   @Delete(':id')

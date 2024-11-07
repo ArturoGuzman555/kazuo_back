@@ -22,7 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Get()
   getAuth(): string {
@@ -56,6 +56,15 @@ export class AuthController {
     return this.authService.resetPassword(token, newPassword, confirmNewPass);
   }
 
+  @Post('auth0/callback')
+  @UseGuards(AuthGuard('auth0'))
+  async auth0Callback(@Req() req, @Body() body) {
+    const user = await this.authService.validateAuth0User(req.user);
+    console.log(user);
+    console.log(body)
+    return this.authService.login(user);
+
+  }
   @Get()
   @UseGuards(AuthGuard('auth0'))
   getProfile() {

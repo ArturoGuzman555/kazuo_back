@@ -144,4 +144,27 @@ export class AuthService {
   async validateUser(payload: any) {
     return { userId: payload.sub, username: payload.name };
   }
+
+  async validateAuth0User(auth0User: any) {
+    let user = await this.userRepository.getUserByEmail(auth0User.email);
+
+    if (!user.auth0Id) {
+      // Si el usuario existe pero no tiene auth0Id, lo actualizamos
+      user.auth0Id = auth0User.sub;
+      await this.userRepository.save(user);
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      companies: user.companies
+  };
+  }
+
+  async login(user: any) {
+    const payload = { email: user.email, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 }

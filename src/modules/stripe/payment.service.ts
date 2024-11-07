@@ -80,8 +80,8 @@ export class StripeService {
           },
         ],
         mode: 'subscription',
-        success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}/planes`,
+        success_url: `${process.env.FRONTEND_URL}/GestionInventario`,
+        cancel_url: `${process.env.FRONTEND_URL}/Planes`,
       });
 
       // Actualiza al usuario después de crear la sesión
