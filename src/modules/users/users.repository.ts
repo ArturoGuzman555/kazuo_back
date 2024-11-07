@@ -45,7 +45,7 @@ export class UserRepository {
   async getUserByEmail(email: string): Promise<Users | null> {
     return this.userRepository.findOne({
       where: { email },
-      relations: ['companies'],  // Incluye la relación de las compañías
+      relations: ['companies'], 
     });
   }
   

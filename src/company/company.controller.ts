@@ -52,8 +52,6 @@ export class CompanyController {
   }
 
   @Get('user/:userId')
-  @UseGuards(AuthGuard)
-  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Obtener las compañías de un usuario específico' })
   @ApiResponse({
     status: 200,
@@ -123,6 +121,10 @@ export class CompanyController {
     return this.companyService.updateCompany(companyId, updateCompanyDto);
   }
 
+  @Get('AllStoresCompany/:companyId')
+  async storesByCompany(@Param('companyId') companyId: string) {
+    return this.companyService.storesByCompany(companyId);
+  }
   @Get(':id')
   @ApiOperation({ summary: 'Obtener compañía por ID' })  // Descripción de la operación
   @ApiParam({

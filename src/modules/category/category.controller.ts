@@ -30,7 +30,6 @@ export class CategoryController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.categoryService.findAll();
