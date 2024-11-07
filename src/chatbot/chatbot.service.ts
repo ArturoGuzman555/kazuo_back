@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CompanyService } from 'src/company/company.service';
 import { ProductService } from 'src/modules/product/product.service';
 import { StoreService } from 'src/modules/store/store.service'; 
+import { CategoryService } from 'src/modules/category/category.service';
+import { UsersService } from 'src/modules/users/users.service';
 @Injectable()
 export class ChatBotService {
   private isFirstMessage: boolean = true;
@@ -11,13 +13,14 @@ export class ChatBotService {
     private readonly companyService: CompanyService,
     private readonly productService: ProductService,
     private readonly storeService: StoreService, 
+    private readonly categoryService: CategoryService,
+    private readonly userService: UsersService,
   ) {}
 
   private checkInactivity(): boolean {
     const currentTime = Date.now();
     if (currentTime - this.lastActivityTime > this.INACTIVITY_TIMEOUT) {
       this.isFirstMessage = true;
-      return true;
     }
     this.lastActivityTime = currentTime;
     return false;
@@ -56,21 +59,31 @@ export class ChatBotService {
         }
         return { prompt: 'Hubo un problema al consultar la bodega.' };
       }
+    }    
+    if (lowerMessage.includes('categorias')) {
+      try {
+        const categories = await this.categoryService.findAll();
+        return {
+          prompt: 'Aquí tienes las categorías disponibles:',
+          data: categories,
+        };
+      } catch (error) {
+        return { prompt: 'Hubo un problema al consultar las categorías.' };
+      }
     }
 
-    if (lowerMessage.includes('crear empresa')) {
-      return {
-        prompt:
-          'Por favor, proporcione los datos para registrar la empresa (nombre, país, dirección, etc.).',
-      };
+    if (lowerMessage.includes('mi información') || lowerMessage.includes('mis datos')) {
+      try {
+        const user = await this.userService.getUserById(userId);
+        return {
+          prompt: 'Aquí está user'
+        };
+      } catch (error) {
+        return { prompt: 'No se pudo obtener tu información.' };
+      }
     }
 
-    if (lowerMessage.includes('crear producto')) {
-      return {
-        prompt:
-          'Por favor, proporcione los datos para crear el producto (nombre, precio, id de la bodega, etc.).',
-      };
-    }
+   
 
 
     return { prompt: 'Lo siento, no entendí la solicitud.' };

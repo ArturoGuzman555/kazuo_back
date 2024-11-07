@@ -14,12 +14,14 @@ export class Auth0Strategy extends PassportStrategy(Strategy, 'auth0') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'YOUR_AUTH0_CLIENT_SECRET',
+      secretOrKey: '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',
+      audience: "https://api.kazuo.com/",
+      issuer: `http://ingridwillich.us.auth0.com/`,
     });
   }
 
   async validate(payload: any) {
-    const user = await this.usersService.findUserByAuth0Id(payload.sub);
+    const user = await this.usersService.findUserByAuth0Id(payload.email);
     
     if (!user) {
       throw new Error('Usuario no encontrado en la base de datos');

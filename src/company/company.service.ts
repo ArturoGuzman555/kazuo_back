@@ -151,7 +151,7 @@ export class CompanyService {
 
   async storesByCompany(companyId: string) {
     const stores = await this.companyRepository.find({
-      where: { id: companyId }, relations: ['stores'],
+      where: { id: companyId }, relations: {stores: {category : true}},
     });
     if (!stores){
       throw new NotFoundException(`La compania con  id ${companyId} no fue encontrada`);
