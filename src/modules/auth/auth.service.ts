@@ -76,7 +76,7 @@ export class AuthService {
       `Hola ${createdUser.name}, gracias por registrarte en nuestra aplicación.`,
     );
 
-    return {};
+    return user;
   }
 
   async requestPasswordReset(email: string): Promise<string> {
@@ -99,7 +99,7 @@ export class AuthService {
       `Haga clic en el siguiente enlace para restablecer su contraseña: ${resetUrl}`,
     );
 
-    return token;
+    return "Token enviado";
   }
 
   async resetPassword(
@@ -149,7 +149,6 @@ export class AuthService {
     let user = await this.userRepository.getUserByEmail(auth0User.email);
 
     if (!user.auth0Id) {
-      // Si el usuario existe pero no tiene auth0Id, lo actualizamos
       user.auth0Id = auth0User.sub;
       await this.userRepository.save(user);
     }
