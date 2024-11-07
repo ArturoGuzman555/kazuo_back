@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -9,6 +10,7 @@ import {
 import { Category } from './category.entity';
 import { Users } from './users.entity';
 import { Product } from './product.entity';
+import { Company } from './company.entity';
 
 @Entity({ name: 'store' })
 export class Store {
@@ -29,4 +31,8 @@ export class Store {
 
   @ManyToOne(() => Users, (users) => users.stores, { onDelete: 'CASCADE' })
   user: Users;
+
+  @ManyToMany(() => Company, (company) => company.stores)
+  companies: Company[];
+  
 }

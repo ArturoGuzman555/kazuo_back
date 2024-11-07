@@ -7,9 +7,10 @@ import { MailModule } from 'src/mail/mail.module';
 import { UsersModule } from '../users/users.module';
 import { CryptoService } from 'src/crypto/crypto.service';
 import { UserRepository } from '../users/users.repository';
+import { CompanyModule } from 'src/company/company.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Users]), MailModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Users]), MailModule, UsersModule, CompanyModule],
   controllers: [AuthController],
   providers: [AuthService, CryptoService, UserRepository],
 })
