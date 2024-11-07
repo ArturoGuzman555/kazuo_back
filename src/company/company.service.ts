@@ -80,6 +80,30 @@ export class CompanyService {
     });
   }
 
+  async getCompaniesById(userId: string): Promise<Company[]> {
+    const user = await this.usersService.getUserById(userId);
+    if (!user) {
+      throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
+    }
+
+    return this.companyRepository.find({
+      where: { users: { id: userId } },
+    });
+  }
+
+  async getCompanyById(companyId: string): Promise<Company> {
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId },
+      relations: ['users'], 
+    });
+  
+    if (!company) {
+      throw new NotFoundException(`Compañía con id ${companyId} no encontrada`);
+    }
+  
+    return company;
+  }
+
   async addUserToCompany(userEmail: string, companyId: string): Promise<void> {
     const company = await this.companyRepository.findOne({
       where: { id: companyId },

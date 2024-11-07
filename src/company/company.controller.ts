@@ -13,6 +13,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiParam,
 } from '@nestjs/swagger';
 import { CompanyService } from './company.service';
 import {
@@ -123,5 +124,24 @@ export class CompanyController {
   @Get('AllStoresCompany/:companyId')
   async storesByCompany(@Param('companyId') companyId: string) {
     return this.companyService.storesByCompany(companyId);
+  }
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener compañía por ID' })  // Descripción de la operación
+  @ApiParam({
+    name: 'id',
+    description: 'ID único de la compañía',
+    type: String,
+  })  // Descripción del parámetro 'id'
+  @ApiResponse({
+    status: 200,
+    description: 'Compañía encontrada',
+    type: Company,  // Define el tipo de respuesta exitosa
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Compañía no encontrada',
+  })
+  async getCompanyById(@Param('id') id: string): Promise<Company> {
+    return this.companyService.getCompanyById(id);
   }
 }
